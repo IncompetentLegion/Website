@@ -87,24 +87,16 @@ body::before {
   color: white;
 }
 
-/* 2K screens (2560px+) */
+/* 2K screens (2560px+) - maintain 1920x1080 aspect ratio feel */
 @media (min-width: 2560px) {
-  html {
-    font-size: 120%;
-  }
-
   .container {
-    max-width: 2200px;
+    max-width: 1920px;
   }
 }
 
-/* 4K screens (3840px+) */
+/* 4K screens (3840px+) - maintain 1920x1080 aspect ratio feel */
 @media (min-width: 3840px) {
-  html {
-    font-size: 160%;
-  }
-
   .container {
-    max-width: 3200px;
+    max-width: 1920px;
   }
 }

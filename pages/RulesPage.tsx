@@ -3,8 +3,8 @@ import { Card, SectionHeader, DividerSVG, Badge } from '../components/UI';
 
 const RulesPage: React.FC = () => {
   return (
-    <div className="bg-white min-h-screen">
-      <section className="pt-40 pb-32">
+    <div className="bg-black min-h-screen">
+      <section className="pt-40 pb-32 bg-white">
         <div className="container mx-auto px-4 md:px-8">
           <SectionHeader 
             title="Operational Directives" 
@@ -30,7 +30,7 @@ const RulesPage: React.FC = () => {
                                   "Ghosting or leaking intel to the enemy team is strictly forbidden."
                                 ].map((rule, i) => (
                                     <li key={i} className="flex gap-4 group">
-                                        <div className="w-1.5 h-1.5 bg-[#e10600] mt-2 group-hover:scale-150 transition-transform"></div>
+                                        <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-[#e10600] mt-2 group-hover:scale-150 transition-transform"></div>
                                         <p className="text-sm 3xl:text-base 4xl:text-lg font-medium text-gray-600 leading-relaxed group-hover:text-black transition-colors">{rule}</p>
                                     </li>
                                 ))}
@@ -47,7 +47,7 @@ const RulesPage: React.FC = () => {
                                   "No mic spamming during staging phase or end of round"
                                 ].map((rule, i) => (
                                     <li key={i} className="flex gap-4 group">
-                                        <div className="w-1.5 h-1.5 bg-black mt-2 group-hover:scale-150 transition-transform"></div>
+                                        <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-black mt-2 group-hover:scale-150 transition-transform"></div>
                                         <p className="text-sm 3xl:text-base 4xl:text-lg font-medium text-gray-600 leading-relaxed group-hover:text-black transition-colors">{rule}</p>
                                     </li>
                                 ))}
@@ -74,7 +74,7 @@ const RulesPage: React.FC = () => {
                                       "Mechanized infantry squads are allowed"
                                     ].map((rule, i) => (
                                         <li key={i} className="flex gap-4 group">
-                                            <div className="w-1.5 h-1.5 bg-[#e10600] mt-2"></div>
+                                            <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-[#e10600] mt-2"></div>
                                             <p className="text-sm 3xl:text-base 4xl:text-lg font-medium text-gray-600 leading-relaxed group-hover:text-black transition-colors">{rule}</p>
                                         </li>
                                     ))}
@@ -129,12 +129,12 @@ const RulesPage: React.FC = () => {
         </div>
       </section>
       
-      <DividerSVG color="#000" />
+      <DividerSVG color="#000" bg="#fff" />
       
       <section className="py-24 bg-black text-white text-center">
         <div className="container mx-auto px-4 md:px-8">
           <h2 className="text-5xl 3xl:text-6xl 4xl:text-7xl font-black uppercase tracking-tighter mb-6">STAND FIRM.</h2>
-          <p className="text-gray-400 mb-12 max-w-xl 3xl:max-w-2xl mx-auto font-medium 3xl:text-lg">Our rules are enforced to protect the experience of every player in the Legion. See you on the front lines.</p>
+          <p className="text-gray-400 mb-0 max-w-xl 3xl:max-w-2xl mx-auto font-medium 3xl:text-lg">Our rules are enforced to protect the experience of every player in the Legion. See you on the front lines.</p>
         </div>
       </section>
     </div>
