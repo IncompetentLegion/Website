@@ -90,6 +90,23 @@ The edge function reads the `MSS_ACCESS_TOKEN` secret, builds the appropriate My
 └── tsconfig.*.json
 ```
 
+## Unused / Leftover Files (Safe to Delete)
+
+These files are leftovers from the original template and are **not imported or used anywhere**:
+
+| File | Reason |
+|------|--------|
+| `index.tsx` | Old entry point using HashRouter — replaced by `src/main.tsx` |
+| `App.tsx` (root) | Old app shell — replaced by `src/App.tsx` |
+| `logo.png` | Original template logo, not referenced |
+| `src/App.css` | Empty file, no imports |
+| `src/components/NavLink.tsx` | Wrapper component, never imported |
+| `src/pages/Index.tsx` | Default template placeholder page, not routed |
+| `src/test/example.test.ts` | Boilerplate test file |
+| `server_proxy_example.js` | Example Node/Express proxy — replaced by edge function |
+| `metadata.json` | Template metadata, not used at runtime |
+| `public/placeholder.svg` | Default placeholder, not referenced |
+| `components.json` | shadcn config, not needed at runtime |
 
 ## Setup & Installation
 
@@ -97,8 +114,14 @@ The edge function reads the `MSS_ACCESS_TOKEN` secret, builds the appropriate My
 - [Node.js](https://nodejs.org/) 18+
 - [Bun](https://bun.sh/) or npm
 
+### 1. Clone the repo
 
-### 1. Install dependencies
+```bash
+git clone https://github.com/YOUR_USERNAME/incompetent-legion.git
+cd incompetent-legion
+```
+
+### 2. Install dependencies
 
 ```bash
 bun install
@@ -106,9 +129,9 @@ bun install
 npm install
 ```
 
-### 2. Environment variables
+### 3. Environment variables
 
-The app needs these environment variables (Casual has these -"joinB3"):
+The app needs these environment variables (provided automatically in production):
 
 | Variable | Description |
 |----------|-------------|
@@ -121,7 +144,7 @@ The edge function also requires:
 |--------|-------------|
 | `MSS_ACCESS_TOKEN` | MySquadStats API key (server-side only, never exposed to browser) |
 
-### 3. If Running locally
+### 4. Run locally
 
 ```bash
 bun run dev
@@ -129,6 +152,7 @@ bun run dev
 npm run dev
 ```
 
+The site will be available at `http://localhost:5173`.
 
 ## License
 
