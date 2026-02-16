@@ -1,18 +1,15 @@
-
 import { LeaderboardType, PlayerStats, LeaderboardResponse, WeaponStat, RibbonStat, PlayerInfo, SeasonStats, AllTimeStats } from '../types';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-
+// Call own backend instead of Supabase directly
 async function mssProxy(body: Record<string, unknown>) {
-  const res = await fetch(`${SUPABASE_URL}/functions/v1/mssproxy`, {
+  const res = await fetch('/api/mss', {
     method: 'POST',
     headers: {
-      'apikey': SUPABASE_ANON_KEY,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
   });
+  
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || 'Proxy request failed');
@@ -44,7 +41,6 @@ export const mssApi = {
 
   async detectCurrentSeason(): Promise<string> {
     if (this._currentSeason) return this._currentSeason;
-    // Try seasons from high to low to find the latest active one
     for (let s = 20; s >= 1; s--) {
       try {
         const json = await mssProxy({
@@ -64,7 +60,7 @@ export const mssApi = {
         continue;
       }
     }
-    return 'Season 8'; // fallback
+    return 'Season 8';
   },
 
   async getPlayerSeasonStats(steamId: string, season?: string): Promise<{ stats: SeasonStats | null; seasonName: string }> {
@@ -105,7 +101,10 @@ export const mssApi = {
 
   async getPlayerRibbons(steamId: string): Promise<RibbonStat[]> {
     try {
-      const json = await mssProxy({ endpoint: 'playerRibbons', steamid: steamId });
+      const json = await mssProxy({
+        endpoint: 'playerRibbons',
+        steamid: steamId,
+      });
       return json.data || [];
     } catch {
       return [];
@@ -114,25 +113,19 @@ export const mssApi = {
 
   async getPlayerWeapons(steamId: string): Promise<WeaponStat[]> {
     try {
-      const json = await mssProxy({ endpoint: 'playerWeapons', steamid: steamId });
+      const json = await mssProxy({
+        endpoint: 'playerWeapons',
+        steamid: steamId,
+      });
       return json.data || [];
     } catch {
       return [];
     }
   },
 
-  async getLeaderboard(
-    type: LeaderboardType, 
-    page: number = 1, 
-    pageSize: number = 10,
-    search: string = ''
-  ): Promise<LeaderboardResponse> {
-    const endpoint = type === LeaderboardType.SEASON 
-      ? 'seasonLeaderboards' 
-      : 'allTimeLeaderboards';
-    
+  async getLeaderboard(type: LeaderboardType, page: number = 1, pageSize: number = 10, search: string = ''): Promise<LeaderboardResponse> {
     const body: Record<string, unknown> = {
-      endpoint,
+      endpoint: type === LeaderboardType.SEASON ? 'seasonLeaderboards' : 'allTimeLeaderboards',
       steamid: search,
       search,
       page,
@@ -146,18 +139,5 @@ export const mssApi = {
     }
 
     return mssProxy(body);
-  }
+  },
 };
-
-export const mockStats: PlayerStats[] = [
-  { steamId: '76561198000000001', name: 'Legionnaire_Alpha', kills: 452, deaths: 120, kd: 3.77, revives: 88, rank: 1, seasonScore: 12500 },
-  { steamId: '76561198000000002', name: 'Tactical_Gnome', kills: 388, deaths: 210, kd: 1.85, revives: 142, rank: 2, seasonScore: 11200 },
-];
-
-export const mockWeapons: WeaponStat[] = [
-  { weaponName: 'M4A1', woundsCount: 150, damageDealt: 5000 },
-];
-
-export const mockRibbons: RibbonStat[] = [
-  { id: 1, ribbonName: 'Iron Sights Mastery', ribbonDescription: '50 kills without optics', timesAwarded: 1 },
-];
