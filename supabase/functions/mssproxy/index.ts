@@ -14,6 +14,12 @@ Deno.serve(async (req: Request) => {
 
   // Verify internal key
   const providedKey = req.headers.get('x-internal-key');
+  
+  // ✅ Debug logging
+  console.log('Provided key:', providedKey ? `${providedKey.substring(0, 10)}...` : 'null/undefined');
+  console.log('Expected key:', INTERNAL_KEY ? `${INTERNAL_KEY.substring(0, 10)}...` : 'null/undefined');
+  console.log('Keys match:', providedKey === INTERNAL_KEY);
+  
   if (providedKey !== INTERNAL_KEY) {
     console.error('Unauthorized: Invalid or missing internal key');
     return new Response(JSON.stringify({ error: 'Forbidden' }), {
