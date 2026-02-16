@@ -1,14 +1,25 @@
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-internal-key',
 };
 
 const MSS_API_KEY = Deno.env.get('MSS_ACCESS_TOKEN');
+const INTERNAL_KEY = Deno.env.get('INTERNAL_KEY');
 const BASE_URL = 'https://api.mysquadstats.com';
 
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Verify internal key
+  const providedKey = req.headers.get('x-internal-key');
+  if (providedKey !== INTERNAL_KEY) {
+    console.error('Unauthorized: Invalid or missing internal key');
+    return new Response(JSON.stringify({ error: 'Forbidden' }), {
+      status: 403,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
   }
 
   try {
