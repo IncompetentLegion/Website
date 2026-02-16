@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 const LandingPage = lazy(() => import("../pages/LandingPage"));
 const RulesPage = lazy(() => import("../pages/RulesPage"));
 const LeaderboardPage = lazy(() => import("../pages/LeaderboardPage"));
+const TemplatesPage = lazy(() => import("../pages/TemplatesPage"));
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/" element={<LandingPage />} />
               <Route path="/rules" element={<RulesPage />} />
               <Route path="/leaderboard" element={<LeaderboardPage />} />
+              <Route path="/templates" element={<TemplatesPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

@@ -1,4 +1,1 @@
 project_id = "xpxbtyqajsaeiqnoiszr"
-
-[functions.mssproxy]
-verify_jwt = false
