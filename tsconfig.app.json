@@ -27,12 +27,6 @@
     "useDefineForClassFields": true
   },
   "include": [
-    "src",
-    "pages",
-    "components",
-    "services",
-    "types.ts",
-    "App.tsx",
-    "index.tsx"
+    "src"
   ]
 }
