@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import mysql from "mysql2/promise";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 7000;
@@ -12,11 +13,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.json());
+app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
 
 // MySQL connection pool
-const pool = mysql.createPool(
-  process.env.DATABASE_URL || "mysql://root:test@127.0.0.1:3306/squadjs_db"
-);
+const pool = mysql.createPool(process.env.DATABASE_URL);
 
 // Simple in-memory cache with per-key TTL
 const CACHE_TTL_LEADERBOARD = 30 * 60 * 1000; // 30 minutes
@@ -81,7 +81,7 @@ app.get("/api/leaderboard", async (req, res) => {
     setCache("leaderboard", result, CACHE_TTL_LEADERBOARD);
     res.json(result);
   } catch (err) {
-    console.error("Leaderboard query failed:", err.message);
+    console.error("Leaderboard query failed:", err);
     res.status(500).json({ error: "Failed to fetch leaderboard data" });
   }
 });
@@ -122,7 +122,7 @@ app.get("/api/live", async (req, res) => {
     setCache("live", result, CACHE_TTL_LIVE);
     res.json(result);
   } catch (err) {
-    console.error("Live query failed:", err.message);
+    console.error("Live query failed:", err);
     res.status(500).json({ error: "Failed to fetch live data" });
   }
 });
@@ -137,4 +137,9 @@ app.get(/.*/, (req, res) => {
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
+});
+
+process.on("SIGTERM", async () => {
+  await pool.end();
+  process.exit(0);
 });

@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { SectionHeader, Card, Badge, StatBox, SkeletonRow } from '../components/UI';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 import { useLive } from '../hooks/useLive';
@@ -34,7 +33,7 @@ function SkeletonBlock({ rows = 5, cols = 3 }: { rows?: number; cols?: number })
 }
 
 
-const LeaderboardPage: React.FC = () => {
+const LeaderboardPage = () => {
   const { data: lb, isLoading: lbLoading, error: lbError } = useLeaderboard();
   const { data: live, isLoading: liveLoading, error: liveError } = useLive();
 
@@ -81,7 +80,7 @@ const LeaderboardPage: React.FC = () => {
 
         {/* Current Match */}
         <section className="mb-16">
-          {liveError && <ErrorBox message={(liveError as Error).message} />}
+          {liveError && <ErrorBox message={String(liveError)} />}
           {liveLoading && <SkeletonBlock rows={2} cols={4} />}
           {live?.currentMatch && (
             <Card title="Current Match">
@@ -132,7 +131,7 @@ const LeaderboardPage: React.FC = () => {
 
         {/* Leaderboards — two-column grid */}
         <section className="mb-16">
-          {lbError && <ErrorBox message={(lbError as Error).message} />}
+          {lbError && <ErrorBox message={String(lbError)} />}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Most Kills */}
             <Card title="Most Kills">
@@ -201,7 +200,7 @@ const LeaderboardPage: React.FC = () => {
         {/* Recent Match History */}
         <section className="mb-16">
           <Card title="Recent Matches">
-            {liveError && <ErrorBox message={(liveError as Error).message} />}
+            {liveError && <ErrorBox message={String(liveError)} />}
             {liveLoading && <SkeletonBlock rows={6} cols={5} />}
             {live?.recentMatches && (
               <div className="overflow-x-auto">

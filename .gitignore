@@ -3,3 +3,5 @@ dist/
 mysql_data/
 docker-compose.yml
 *.log
+.env*
+.DS_Store
