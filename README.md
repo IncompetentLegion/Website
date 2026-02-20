@@ -1,93 +1,69 @@
 
 # IncompetentLegion.com
 
-The official website for the **Incompetent Legion** Squad community. Built with React, styled with Tailwind CSS, and powered by a serverless backend.
+The official website for the **Incompetent Legion** Squad community. Built with React, Tailwind CSS, and Express.
 
 ## Features
 
 - **Landing Page** — Hero section, community info, and Discord invite links.
-- **Server Rules** — Full breakdown of our server rules with a direct link to open a Discord ticket.
-- **Leaderboard** — self explanitory, under construction
-- **Templates** - Can be viewed at Domain/templates
-
-
-## How the Backend Works
-
-fill in the blanks
-
-## Hosting
-
-- **Frontend** — Static site hosted and deployed via CI/CD. SPA routing handled by a `_redirects` rule.
-- **Backend** — 
-- **Secrets** — API keys are stored as encrypted server-side secrets (.env)
+- **Server Rules** — Full breakdown of server rules with a direct link to open a Discord ticket.
+- **Leaderboard** — Player stats from the SquadJS MySQL database. See `queries.md` for the SQL reference.
+- **Templates** — UI component reference page at `/templates`.
 
 ## Project Structure
 
 ```
-├── components/
-│   ├── Footer.tsx            # Site footer with links and branding
-│   ├── Navbar.tsx            # Responsive navbar + mobile hamburger menu
-│   ├── PlayerProfile.tsx     # Player stats display component
-│   └── UI.tsx                # Reusable UI primitives (Button, Card, SectionHeader)
-│
-├── pages/
-│   ├── LandingPage.tsx       # Home page
-│   ├── LeaderboardPage.tsx   # Player lookup + leaderboard
-│   └── RulesPage.tsx         # Server rules + Discord ticket link
-│
 ├── src/
-│   ├── App.tsx               # App shell — routing, layout, scroll-to-top
+│   ├── App.tsx               # Routing, layout, scroll-to-top
 │   ├── main.tsx              # React entry point
 │   ├── index.css             # Global styles and Tailwind config
+│   ├── components/
+│   │   ├── Footer.tsx
+│   │   ├── Navbar.tsx
+│   │   └── UI.tsx            # Reusable UI primitives
+│   ├── hooks/
+│   │   └── useLeaderboard.ts # React Query hook for /api/leaderboard
 │   ├── pages/
-│   │   └── NotFound.tsx      # 404 page
-│   ├── assets/
-│   │   ├── heroban.webp      # Hero banner image
-│   │   ├── logores.webp      # Logo
-│   │   └── cons.webp         # Under construction tape overlay
-│
-├── types.ts                  # Shared TypeScript interfaces
-├── index.html                # HTML shell with meta/OG tags
-├── public/
-│   ├── _redirects            # SPA routing for production
-│   ├── favicon.webp          # Browser tab icon
+│   │   ├── LandingPage.tsx
+│   │   ├── LeaderboardPage.tsx
+│   │   ├── RulesPage.tsx
+│   │   ├── TemplatesPage.tsx
+│   │   └── NotFound.tsx
 │   └── assets/
-│       └── logores.webp      # OG image for social cards
 │
+├── server.js                 # Express backend + API routes
+├── index.html
 ├── tailwind.config.ts
 ├── vite.config.ts
 └── tsconfig.*.json
 ```
 
-
-## Setup & Installation
-
-### Prerequisites
-- [Node.js](https://nodejs.org/) 18+
-- [Bun](https://bun.sh/) or npm
-
+## Setup
 
 ### 1. Install dependencies
 
 ```bash
-bun install
-# or
 npm install
 ```
 
 ### 2. Environment variables
 
-fill in the blanks
+| Variable | Default | Optional | Description |
+|----------|---------|----------|-------------|
+| `DATABASE_URL` | `mysql://root:test@127.0.0.1:3306/squadjs_db` | Yes | MySQL connection URI |
+| `PORT` | `7000` | Yes | Express server port |
 
-
-### 3. If Running locally
+### 3. Run the server
 
 ```bash
-bun run dev
-# or
-npm run dev
+node server.js
 ```
 
+With a custom database:
+
+```bash
+DATABASE_URL=mysql://user:password@host:3306/squadjs_db node server.js
+```
 
 ## License
 
