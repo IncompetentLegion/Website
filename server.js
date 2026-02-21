@@ -19,7 +19,7 @@ app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
 const pool = mysql.createPool(process.env.DATABASE_URL);
 
 // Simple in-memory cache with per-key TTL
-const CACHE_TTL_LEADERBOARD = 30 * 60 * 1000; // 30 minutes
+const CACHE_TTL_LEADERBOARD = 3 * 60 * 1000; // 3 minutes
 const CACHE_TTL_LIVE = 60 * 1000; // 1 minute
 const cache = {};
 
@@ -52,6 +52,7 @@ app.get("/api/leaderboard", async (req, res) => {
            AND d.teamkill = 0
            AND m.layerClassname NOT LIKE '%Seed%'
            AND d.time >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+           AND d.time <= DATE_SUB(NOW(), INTERVAL 2 HOUR)
          GROUP BY d.attacker
          ORDER BY kills DESC
          LIMIT 15`,
@@ -64,6 +65,7 @@ app.get("/api/leaderboard", async (req, res) => {
          WHERE r.server = ?
            AND m.layerClassname NOT LIKE '%Seed%'
            AND r.time >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+           AND r.time <= DATE_SUB(NOW(), INTERVAL 2 HOUR)
          GROUP BY r.reviver
          ORDER BY revives DESC
          LIMIT 15`,
