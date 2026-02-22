@@ -11,7 +11,7 @@ import { Card, SectionHeader, DividerSVG, Badge, StatBox, Button } from '../comp
 
 const TemplatesPage: React.FC = () => {
   return (
-    <div className="bg-white min-h-screen pb-32">
+    <div className="bg-white dark:bg-[#0f0f0f] min-h-screen pb-32">
       <div className="container mx-auto px-4 md:px-8 pt-40">
 
         {/* Page Header */}
@@ -30,12 +30,12 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Section Header
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Component: SectionHeader from components/UI.tsx
           </p>
 
           {/* Default (left-aligned, dark text) */}
-          <div className="mb-8 p-8 border-2 border-dashed border-gray-200">
+          <div className="mb-8 p-8 border-2 border-dashed border-gray-200 dark:border-gray-700">
             <SectionHeader
               title="Example Title Here"
               subtitle="A short description of what this section contains."
@@ -44,7 +44,7 @@ const TemplatesPage: React.FC = () => {
           </div>
 
           {/* Centered variant */}
-          <div className="mb-8 p-8 border-2 border-dashed border-gray-200">
+          <div className="mb-8 p-8 border-2 border-dashed border-gray-200 dark:border-gray-700">
             <SectionHeader
               title="Centered Variant"
               subtitle="Pass centered={true} to center-align the header block."
@@ -74,14 +74,14 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Content Card
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Component: Card from components/UI.tsx
           </p>
 
           {/* Card with title tab */}
           <div className="mb-8">
             <Card title="Card Title">
-              <p className="text-sm font-medium text-gray-600 leading-relaxed">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
                 This is a standard content card with a floating title tab.
                 Use it for grouping related content like rules, stats, or info blocks.
               </p>
@@ -90,7 +90,7 @@ const TemplatesPage: React.FC = () => {
 
           {/* Card without title */}
           <Card>
-            <p className="text-sm font-medium text-gray-600 leading-relaxed">
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
               Card without a title tab. Good for search forms or simple content wrappers.
             </p>
           </Card>
@@ -105,7 +105,7 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Lookup / Search Box
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Pattern: Card + input + Button
           </p>
 
@@ -120,7 +120,7 @@ const TemplatesPage: React.FC = () => {
                 <input
                   type="text"
                   placeholder="ENTER SEARCH TERM..."
-                  className="w-full px-8 py-5 border-2 border-black focus:outline-none focus:border-[#e10600] font-black text-sm placeholder:text-gray-300 uppercase tracking-widest"
+                  className="w-full px-8 py-5 border-2 border-black dark:border-gray-700 bg-white dark:bg-[#1a1a1a] focus:outline-none focus:border-[#e10600] font-black text-sm placeholder:text-gray-300 dark:placeholder:text-gray-600 uppercase tracking-widest"
                 />
                 {/* Optional: loading spinner (toggle visibility as needed) */}
                 {/*
@@ -151,7 +151,7 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Statistics Display (Stat Rows)
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Pattern: Inline stat rows inside a Card
           </p>
 
@@ -166,7 +166,7 @@ const TemplatesPage: React.FC = () => {
                   { label: 'Deaths', value: '412', rank: 120 },
                   { label: 'K/D Ratio', value: '2.39', rank: 35 },
                 ].map((stat, i) => (
-                  <div key={i} className="flex justify-between items-center py-3 border-b border-gray-100 last:border-0">
+                  <div key={i} className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-800 last:border-0">
                     <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
                       {stat.label}
                     </span>
@@ -191,7 +191,7 @@ const TemplatesPage: React.FC = () => {
                   { label: 'Top Victim', name: 'SomePlayer', detail: '24 Times' },
                   { label: 'Top Nemesis', name: 'AnotherPlayer', detail: '18 Times' },
                 ].map((item, i) => (
-                  <div key={i} className="flex justify-between items-center py-3 border-b border-gray-100 last:border-0">
+                  <div key={i} className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-800 last:border-0">
                     <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">
                       {item.label}
                     </span>
@@ -215,7 +215,7 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             StatBox (Inline)
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Component: StatBox from components/UI.tsx
           </p>
 
@@ -236,7 +236,7 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Profile Header (Dark Box)
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Pattern: Black card with accent border, badge, and stat grid
           </p>
 
@@ -282,7 +282,7 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Rule List Box
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Pattern: Card with titled sub-sections and bullet lists
           </p>
 
@@ -302,7 +302,7 @@ const TemplatesPage: React.FC = () => {
                     <li key={i} className="flex gap-4 group">
                       {/* Red dot indicator */}
                       <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-[#e10600] mt-2 group-hover:scale-150 transition-transform"></div>
-                      <p className="text-sm font-medium text-gray-600 leading-relaxed group-hover:text-black transition-colors">
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed group-hover:text-black dark:group-hover:text-gray-200 transition-colors">
                         {rule}
                       </p>
                     </li>
@@ -323,7 +323,7 @@ const TemplatesPage: React.FC = () => {
                     <li key={i} className="flex gap-4 group">
                       {/* Black dot indicator */}
                       <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-black mt-2 group-hover:scale-150 transition-transform"></div>
-                      <p className="text-sm font-medium text-gray-600 leading-relaxed group-hover:text-black transition-colors">
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed group-hover:text-black dark:group-hover:text-gray-200 transition-colors">
                         {rule}
                       </p>
                     </li>
@@ -343,7 +343,7 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Info / Callout Boxes
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Pattern: Standalone boxes for notices, warnings, and CTAs
           </p>
 
@@ -371,7 +371,7 @@ const TemplatesPage: React.FC = () => {
             </div>
 
             {/* Light callout box with CTA */}
-            <div className="p-12 border-2 border-black bg-[#f8f8f8] relative overflow-hidden">
+            <div className="p-12 border-2 border-black dark:border-gray-700 bg-[#f8f8f8] dark:bg-[#141414] relative overflow-hidden">
               {/* Decorative background icon */}
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <svg className="w-20 h-20" fill="currentColor" viewBox="0 0 24 24">
@@ -403,11 +403,11 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Important Notice (Inline)
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Pattern: Left-bordered box with Badge
           </p>
 
-          <div className="bg-gray-50 p-6 border-l-4 border-black">
+          <div className="bg-gray-50 dark:bg-[#141414] p-6 border-l-4 border-black dark:border-gray-500">
             <Badge color="black">IMPORTANT</Badge>
             <p className="mt-4 text-xs font-bold text-gray-500 leading-relaxed uppercase tracking-widest">
               This is an inline notice block. Use it for important caveats,
@@ -425,7 +425,7 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Weapon / Item List
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Pattern: Card with rows showing name + two numeric columns
           </p>
 
@@ -436,7 +436,7 @@ const TemplatesPage: React.FC = () => {
                 { name: 'M4A1', stat1: 120, stat1Label: 'Wounds', stat2: 4200, stat2Label: 'Dmg' },
                 { name: 'SVD', stat1: 85, stat1Label: 'Wounds', stat2: 3800, stat2Label: 'Dmg' },
               ].map((w, i) => (
-                <div key={i} className="flex justify-between items-center py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50 px-2 -mx-2 transition-colors">
+                <div key={i} className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] px-2 -mx-2 transition-colors">
                   {/* Item name */}
                   <span className="text-xs font-black uppercase tracking-tight">{w.name}</span>
                   <div className="flex gap-6">
@@ -465,7 +465,7 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Ribbon / Award Grid
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Pattern: Card with 2-column grid of icon + text items
           </p>
 
@@ -477,9 +477,9 @@ const TemplatesPage: React.FC = () => {
                 { name: 'Squad Wipe', count: 5 },
                 { name: 'Logistics Hero', count: 2 },
               ].map((r, i) => (
-                <div key={i} className="flex items-start gap-3 p-3 border border-gray-100 hover:border-[#e10600] transition-colors">
+                <div key={i} className="flex items-start gap-3 p-3 border border-gray-100 dark:border-gray-800 hover:border-[#e10600] transition-colors">
                   {/* Icon placeholder */}
-                  <div className="w-8 h-8 bg-gray-100 flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
                     <svg className="w-4 h-4 text-[#e10600]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                     </svg>
@@ -502,17 +502,17 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Toggle / Tab Bar
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Pattern: Two-button toggle with active state highlight
           </p>
 
-          <div className="flex border-2 border-black">
+          <div className="flex border-2 border-black dark:border-gray-700">
             {/* Active tab */}
             <button className="flex-1 py-4 text-xs font-black uppercase tracking-widest bg-[#e10600] text-white transition-all">
               Option A
             </button>
             {/* Inactive tab */}
-            <button className="flex-1 py-4 text-xs font-black uppercase tracking-widest bg-white text-black hover:bg-gray-50 transition-all">
+            <button className="flex-1 py-4 text-xs font-black uppercase tracking-widest bg-white dark:bg-[#1a1a1a] text-black dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-[#141414] transition-all">
               Option B
             </button>
           </div>
@@ -526,11 +526,11 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Placeholder / Under Construction
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Pattern: Dashed border box with pulsing indicator
           </p>
 
-          <div className="relative border-4 border-black border-dashed p-20 flex flex-col items-center justify-center bg-gray-50">
+          <div className="relative border-4 border-black dark:border-gray-700 border-dashed p-20 flex flex-col items-center justify-center bg-gray-50 dark:bg-[#141414]">
             <div className="w-16 h-1 bg-[#e10600] mb-6 animate-pulse"></div>
             <span className="text-sm font-black uppercase tracking-[0.5em] text-gray-400">
               Feature Coming Soon...
@@ -549,7 +549,7 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             CTA Banner
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Pattern: Full-width colored banner with heading and buttons
           </p>
 
@@ -582,18 +582,18 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Section Divider
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Component: DividerSVG from components/UI.tsx
           </p>
 
           {/* Standard divider (dark wedge) */}
           <div className="mb-4 border border-dashed border-gray-200">
-            <DividerSVG color="#000" />
+            <DividerSVG className="text-black dark:text-gray-200" />
           </div>
 
           {/* Flipped divider with background color */}
           <div className="border border-dashed border-gray-200">
-            <DividerSVG flipped color="#000" bg="#f8f8f8" />
+            <DividerSVG flipped className="text-black dark:text-gray-200" bgClassName="bg-[#f8f8f8] dark:bg-[#141414]" />
           </div>
         </section>
 
@@ -605,7 +605,7 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Badges
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Component: Badge from components/UI.tsx
           </p>
 
@@ -624,7 +624,7 @@ const TemplatesPage: React.FC = () => {
           <h3 className="text-2xl font-black uppercase tracking-tighter mb-2 border-b-4 border-[#e10600] pb-2 inline-block">
             Buttons
           </h3>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-8">
+          <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Component: Button from components/UI.tsx
           </p>
 

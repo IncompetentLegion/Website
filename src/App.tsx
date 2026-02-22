@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
+import { ThemeProvider } from "./hooks/useTheme";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
@@ -19,30 +20,32 @@ function ScrollToTop() {
 }
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <ScrollToTop />
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow">
-          <Suspense fallback={
-            <div className="flex items-center justify-center min-h-[60vh]">
-              <div className="w-12 h-12 border-4 border-[#e10600] border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          }>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/rules" element={<RulesPage />} />
-              <Route path="/leaderboard" element={<LeaderboardPage />} />
-              <Route path="/templates" element={<TemplatesPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </main>
-        <Footer />
-      </div>
-    </BrowserRouter>
-  </QueryClientProvider>
+  <ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <ScrollToTop />
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <main className="flex-grow">
+            <Suspense fallback={
+              <div className="flex items-center justify-center min-h-[60vh]">
+                <div className="w-12 h-12 border-4 border-[#e10600] border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            }>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/rules" element={<RulesPage />} />
+                <Route path="/leaderboard" element={<LeaderboardPage />} />
+                <Route path="/templates" element={<TemplatesPage />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </main>
+          <Footer />
+        </div>
+      </BrowserRouter>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;

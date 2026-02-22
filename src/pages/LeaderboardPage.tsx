@@ -11,11 +11,11 @@ function formatDate(iso: string) {
 
 function ErrorBox({ message }: { message: string }) {
   return (
-    <div className="border-2 border-[#e10600] bg-red-50 p-6">
+    <div className="border-2 border-[#e10600] bg-red-50 dark:bg-red-950/30 p-6">
       <p className="text-sm font-bold text-[#e10600] uppercase tracking-wider">
         Failed to load data
       </p>
-      <p className="text-xs text-gray-500 mt-2">{message}</p>
+      <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{message}</p>
     </div>
   );
 }
@@ -41,7 +41,7 @@ const LeaderboardPage = () => {
   const topMedic = lb?.topMedics?.[0];
 
   return (
-    <div className="bg-white min-h-screen pb-32">
+    <div className="bg-white dark:bg-[#0f0f0f] min-h-screen pb-32">
       <div className="container mx-auto px-4 md:px-8 pt-40">
 
         <SectionHeader
@@ -55,7 +55,7 @@ const LeaderboardPage = () => {
           {lbLoading || liveLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-20 bg-gray-50 animate-pulse border-l-4 border-gray-200" />
+                <div key={i} className="h-20 bg-gray-50 dark:bg-[#1a1a1a] animate-pulse border-l-4 border-gray-200 dark:border-gray-700" />
               ))}
             </div>
           ) : (
@@ -99,9 +99,9 @@ const LeaderboardPage = () => {
                     {live.currentMatch.layer}
                   </p>
                   <div className="flex items-center gap-4 mt-2">
-                    <span className="text-sm text-gray-500">{live.currentMatch.map}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">{live.currentMatch.map}</span>
                     {live.currentMatch.layerClassname && (
-                      <span className="text-xs text-gray-300 font-mono">{live.currentMatch.layerClassname}</span>
+                      <span className="text-xs text-gray-300 dark:text-gray-600 font-mono">{live.currentMatch.layerClassname}</span>
                     )}
                   </div>
                 </div>
@@ -139,7 +139,7 @@ const LeaderboardPage = () => {
               {lb?.topKills && (
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b-2 border-black">
+                    <tr className="border-b-2 border-black dark:border-gray-600">
                       <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3 pr-4">#</th>
                       <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Player</th>
                       <th className="text-right text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Kills</th>
@@ -147,7 +147,7 @@ const LeaderboardPage = () => {
                   </thead>
                   <tbody>
                     {lb.topKills.map((entry, i) => (
-                      <tr key={i} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                      <tr key={i} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors">
                         <td className="py-3 pr-4 text-sm font-black text-gray-300 w-8">
                           {i + 1}
                         </td>
@@ -170,7 +170,7 @@ const LeaderboardPage = () => {
               {lb?.topMedics && (
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b-2 border-black">
+                    <tr className="border-b-2 border-black dark:border-gray-600">
                       <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3 pr-4">#</th>
                       <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Player</th>
                       <th className="text-right text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Revives</th>
@@ -178,7 +178,7 @@ const LeaderboardPage = () => {
                   </thead>
                   <tbody>
                     {lb.topMedics.map((entry, i) => (
-                      <tr key={i} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                      <tr key={i} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors">
                         <td className="py-3 pr-4 text-sm font-black text-gray-300 w-8">
                           {i + 1}
                         </td>
@@ -206,7 +206,7 @@ const LeaderboardPage = () => {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b-2 border-black">
+                    <tr className="border-b-2 border-black dark:border-gray-600">
                       <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Layer</th>
                       <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Start</th>
                       <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">End</th>
@@ -215,7 +215,7 @@ const LeaderboardPage = () => {
                   </thead>
                   <tbody>
                     {live.recentMatches.map((m, i) => (
-                      <tr key={i} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                      <tr key={i} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors">
                         <td className="py-3 text-sm font-bold tracking-tight pr-4">{m.layerClassname}</td>
                         <td className="py-3 text-xs text-gray-400 pr-4 whitespace-nowrap">{formatDate(m.startTime)}</td>
                         <td className="py-3 text-xs text-gray-400 pr-4 whitespace-nowrap">{m.endTime ? formatDate(m.endTime) : '—'}</td>

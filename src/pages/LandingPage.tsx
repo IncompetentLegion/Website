@@ -10,27 +10,27 @@ const LandingPage: React.FC = () => {
   const WHO_ARE_WE_BANNER_URL = heroBan;
 
   return (
-    <div className="overflow-hidden bg-white">
+    <div className="overflow-hidden bg-white dark:bg-[#0f0f0f]">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center pt-20 md:pt-28 pb-12 md:pb-0">
         <div className="absolute inset-0 bg-grid opacity-[0.05]"></div>
         <div className="absolute inset-0 topo-pattern"></div>
         
         {/* Decorative elements */}
-        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-1/3 h-full bg-[#e10600]/5 -skew-x-12 hidden lg:block"></div>
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 border-[60px] border-black/5 rounded-full hidden lg:block"></div>
+        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-1/3 h-full bg-[#e10600]/5 dark:bg-[#e10600]/10 -skew-x-12 hidden lg:block"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 border-[60px] border-black/5 dark:border-white/5 rounded-full hidden lg:block"></div>
         
         <div className="container mx-auto px-4 md:px-8 relative z-10 3xl:max-w-[1920px] 4xl:max-w-[1920px]">
           <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-16 3xl:gap-8 4xl:gap-8">
             <div className="flex-1 text-center lg:text-left">
                 
-                <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-[120px] 3xl:text-[140px] 4xl:text-[160px] font-black uppercase tracking-tighter leading-[0.8] mb-6 md:mb-8 text-black">
+                <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-[120px] 3xl:text-[140px] 4xl:text-[160px] font-black uppercase tracking-tighter leading-[0.8] mb-6 md:mb-8 text-black dark:text-gray-200">
                   <br/>
-                  <span className="text-black" style={{ WebkitTextStroke: '2px rgba(0,0,0,0.15)' }}>INCOMPETENT</span><br/>
+                  <span className="text-black dark:text-gray-200 hero-text-stroke">INCOMPETENT</span><br/>
                   <span className="text-[#e10600]">LEGION</span>
                 </h1>
                 
-                <p className="text-base sm:text-lg md:text-2xl 3xl:text-3xl 4xl:text-4xl font-medium text-gray-500 mb-8 md:mb-12 max-w-2xl leading-relaxed mx-auto lg:mx-0">
+                <p className="text-base sm:text-lg md:text-2xl 3xl:text-3xl 4xl:text-4xl font-medium text-gray-500 dark:text-gray-400 mb-8 md:mb-12 max-w-2xl leading-relaxed mx-auto lg:mx-0">
                   Tired of a one sided clan stomp? At IL - we do things different.
                   Come and join us, and get stomped by multiple clans.
                 </p>
@@ -42,7 +42,7 @@ const LandingPage: React.FC = () => {
             </div>
 
             <div className="flex-1 relative hidden lg:block 3xl:max-w-[500px] 4xl:max-w-[500px]">
-                <div className="relative z-20 shadow-2xl transition-all duration-700 bg-white p-6">
+                <div className="relative z-20 shadow-2xl transition-all duration-700 bg-white dark:bg-[#1a1a1a] p-6">
                     <img 
                       src={HERO_IMAGE_URL} 
                       alt="Incompetent Legion Official Asset" 
@@ -57,7 +57,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      <DividerSVG color="#000" />
+      <DividerSVG className="text-black dark:text-[#0f0f0f]" />
 
       {/* Who Are We Section */}
       <section className="py-32 bg-black text-white relative overflow-hidden">
@@ -93,10 +93,10 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      <DividerSVG flipped color="#000" bg="#f8f8f8" />
+      <DividerSVG flipped className="text-black dark:text-[#0f0f0f]" bgClassName="bg-[#f8f8f8] dark:bg-[#141414]" />
 
       {/* Featured Video / Welcome Section */}
-      <section className="py-32 bg-[#f8f8f8]">
+      <section className="py-32 bg-[#f8f8f8] dark:bg-[#141414]">
         <div className="container mx-auto px-4 md:px-8">
             <div className="mb-16">
                 <SectionHeader 
