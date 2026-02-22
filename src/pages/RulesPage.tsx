@@ -4,7 +4,7 @@ import { Card, SectionHeader, DividerSVG, Badge } from '../components/UI';
 const RulesPage: React.FC = () => {
   return (
     <div className="bg-black min-h-screen">
-      <section className="pt-40 pb-32 bg-white">
+      <section className="pt-40 pb-32 bg-white dark:bg-[#0f0f0f]">
         <div className="container mx-auto px-4 md:px-8">
           <SectionHeader 
             title="Operational Directives" 
@@ -31,7 +31,7 @@ const RulesPage: React.FC = () => {
                                 ].map((rule, i) => (
                                     <li key={i} className="flex gap-4 group">
                                         <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-[#e10600] mt-2 group-hover:scale-150 transition-transform"></div>
-                                        <p className="text-sm 3xl:text-base 4xl:text-lg font-medium text-gray-600 leading-relaxed group-hover:text-black transition-colors">{rule}</p>
+                                        <p className="text-sm 3xl:text-base 4xl:text-lg font-medium text-gray-600 dark:text-gray-400 leading-relaxed group-hover:text-black dark:group-hover:text-gray-200 transition-colors">{rule}</p>
                                     </li>
                                 ))}
                             </ul>
@@ -47,8 +47,8 @@ const RulesPage: React.FC = () => {
                                   "No mic spamming during staging phase or end of round"
                                 ].map((rule, i) => (
                                     <li key={i} className="flex gap-4 group">
-                                        <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-black mt-2 group-hover:scale-150 transition-transform"></div>
-                                        <p className="text-sm 3xl:text-base 4xl:text-lg font-medium text-gray-600 leading-relaxed group-hover:text-black transition-colors">{rule}</p>
+                                        <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-black dark:bg-gray-400 mt-2 group-hover:scale-150 transition-transform"></div>
+                                        <p className="text-sm 3xl:text-base 4xl:text-lg font-medium text-gray-600 dark:text-gray-400 leading-relaxed group-hover:text-black dark:group-hover:text-gray-200 transition-colors">{rule}</p>
                                     </li>
                                 ))}
                             </ul>
@@ -75,14 +75,14 @@ const RulesPage: React.FC = () => {
                                     ].map((rule, i) => (
                                         <li key={i} className="flex gap-4 group">
                                             <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-[#e10600] mt-2"></div>
-                                            <p className="text-sm 3xl:text-base 4xl:text-lg font-medium text-gray-600 leading-relaxed group-hover:text-black transition-colors">{rule}</p>
+                                            <p className="text-sm 3xl:text-base 4xl:text-lg font-medium text-gray-600 dark:text-gray-400 leading-relaxed group-hover:text-black dark:group-hover:text-gray-200 transition-colors">{rule}</p>
                                         </li>
                                     ))}
                                 </ul>
                             </div>
-                            <div className="bg-gray-50 p-6 border-l-4 border-black">
+                            <div className="bg-gray-50 dark:bg-[#141414] p-6 border-l-4 border-black dark:border-gray-500">
                                 <Badge color="black">IMPORTANT</Badge>
-                                <p className="mt-4 text-xs 3xl:text-sm 4xl:text-base font-bold text-gray-500 leading-relaxed uppercase tracking-widest">
+                                <p className="mt-4 text-xs 3xl:text-sm 4xl:text-base font-bold text-gray-500 dark:text-gray-400 leading-relaxed uppercase tracking-widest">
                                     Main camping is regulated by common sense. You must allow enemies to leave their protection zone. Admins use discretion based on current layer geometry.
                                 </p>
                             </div>
@@ -110,14 +110,14 @@ const RulesPage: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="p-12 border-2 border-black bg-[#f8f8f8] relative overflow-hidden">
+                <div className="p-12 border-2 border-black dark:border-gray-700 bg-[#f8f8f8] dark:bg-[#141414] relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-4 opacity-10">
                         <svg className="w-20 h-20" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
                         </svg>
                     </div>
-                    <h3 className="text-2xl 3xl:text-3xl 4xl:text-4xl font-black uppercase tracking-tighter mb-4">Need Support?</h3>
-                    <p className="text-gray-500 text-xs 3xl:text-sm 4xl:text-base font-bold uppercase tracking-widest mb-8 leading-loose">
+                    <h3 className="text-2xl 3xl:text-3xl 4xl:text-4xl font-black uppercase tracking-tighter mb-4 dark:text-gray-200">Need Support?</h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-xs 3xl:text-sm 4xl:text-base font-bold uppercase tracking-widest mb-8 leading-loose">
                         Found a rule breaker? Witnessed asset wasting? Open a ticket on our Discord.
                     </p>
                     <a href="https://discord.com/channels/1470133728989938020/1470870357505474610" target="_blank" rel="noreferrer" className="block w-full py-4 bg-black text-white font-black uppercase tracking-[0.2em] text-xs hover:bg-[#e10600] transition-colors text-center">
@@ -129,7 +129,7 @@ const RulesPage: React.FC = () => {
         </div>
       </section>
       
-      <DividerSVG color="#000" bg="#fff" />
+      <DividerSVG className="text-black dark:text-[#0f0f0f]" bgClassName="bg-white dark:bg-[#0f0f0f]" />
       
       <section className="py-24 bg-black text-white text-center">
         <div className="container mx-auto px-4 md:px-8">
