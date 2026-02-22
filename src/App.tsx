@@ -1,14 +1,14 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
 
-const LandingPage = lazy(() => import("../pages/LandingPage"));
-const RulesPage = lazy(() => import("../pages/RulesPage"));
-const LeaderboardPage = lazy(() => import("../pages/LeaderboardPage"));
-const TemplatesPage = lazy(() => import("../pages/TemplatesPage"));
+const LandingPage = lazy(() => import("./pages/LandingPage"));
+const RulesPage = lazy(() => import("./pages/RulesPage"));
+const LeaderboardPage = lazy(() => import("./pages/LeaderboardPage"));
+const TemplatesPage = lazy(() => import("./pages/TemplatesPage"));
 
 const queryClient = new QueryClient();
 

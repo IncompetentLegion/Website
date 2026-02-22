@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import logoRes from '../src/assets/logores.webp';
+import logoRes from '../assets/logores.webp';
 
 const Navbar: React.FC = () => {
   const location = useLocation();

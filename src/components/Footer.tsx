@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logoRes from '../src/assets/logores.webp';
+import logoRes from '../assets/logores.webp';
 
 const Footer: React.FC = () => {
   const LOGO_URL = logoRes;

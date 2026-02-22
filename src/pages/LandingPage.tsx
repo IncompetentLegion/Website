@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, SectionHeader, DividerSVG, StatBox, Badge } from '../components/UI';
-import logoRes from '../src/assets/logores.webp';
-import heroBan from '../src/assets/heroban.webp';
+import logoRes from '../assets/logores.webp';
+import heroBan from '../assets/heroban.webp';
 
 const LandingPage: React.FC = () => {
   const HERO_IMAGE_URL = logoRes;
