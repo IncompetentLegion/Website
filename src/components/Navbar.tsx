@@ -82,7 +82,7 @@ const Navbar: React.FC = () => {
                 className="text-black dark:text-gray-200 p-2 focus:outline-none"
             >
               <div className="w-6 flex flex-col items-end gap-1.5">
-                  <span className={`h-1 bg-black dark:bg-gray-200 transition-all ${mobileMenuOpen ? 'w-6 rotate-45 translate-y-2.5' : 'w-6'}`}></span>
+                  <span className={`h-1 transition-all ${mobileMenuOpen ? 'w-6 rotate-45 translate-y-2.5 bg-white' : 'w-6 bg-black dark:bg-gray-200'}`}></span>
                   <span className={`h-1 bg-black dark:bg-gray-200 transition-all ${mobileMenuOpen ? 'opacity-0' : 'w-4'}`}></span>
                   <span className={`h-1 bg-[#e10600] transition-all ${mobileMenuOpen ? 'w-6 -rotate-45 -translate-y-2.5' : 'w-6'}`}></span>
               </div>
