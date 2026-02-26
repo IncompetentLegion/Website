@@ -1,7 +1,10 @@
 
-import { SectionHeader, Card, Badge, StatBox, SkeletonRow } from '../components/UI';
+import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { SectionHeader, Card, Badge, StatBox, ErrorBox, SkeletonBlock } from '../components/UI';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 import { useLive } from '../hooks/useLive';
+import { usePlayerSearch } from '../hooks/usePlayerSearch';
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString('en-US', {
@@ -9,29 +12,70 @@ function formatDate(iso: string) {
   });
 }
 
-function ErrorBox({ message }: { message: string }) {
+
+function PlayerSearch() {
+  const [input, setInput] = useState('');
+  const [query, setQuery] = useState('');
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const { data: results, isLoading } = usePlayerSearch(query);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setQuery(input.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [input]);
+
+  useEffect(() => {
+    if (query.length >= 3) setOpen(true);
+  }, [query]);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
-    <div className="border-2 border-[#e10600] bg-red-50 dark:bg-red-950/30 p-6">
-      <p className="text-sm font-bold text-[#e10600] uppercase tracking-wider">
-        Failed to load data
-      </p>
-      <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{message}</p>
+    <div ref={ref} className="relative w-full md:w-72">
+      <input
+        type="text"
+        value={input}
+        onChange={e => setInput(e.target.value)}
+        placeholder="Search player..."
+        className="w-full border-2 border-black dark:border-gray-600 bg-white dark:bg-[#1a1a1a] px-4 py-2 text-xs font-bold uppercase tracking-wider text-black dark:text-gray-200 placeholder-gray-400 outline-none focus:border-[#e10600] transition-colors"
+      />
+      {open && query.length >= 3 && (
+        <div className="absolute z-50 top-full left-0 right-0 mt-1 border-2 border-black dark:border-gray-600 bg-white dark:bg-[#1a1a1a] shadow-lg max-h-60 overflow-y-auto">
+          {isLoading && (
+            <div className="px-4 py-3 text-xs text-gray-400 uppercase tracking-wider">Searching...</div>
+          )}
+          {results && results.length === 0 && (
+            <div className="px-4 py-3 text-xs text-gray-400 uppercase tracking-wider">No players found</div>
+          )}
+          {results?.map(p => (
+            <Link
+              key={p.steamID}
+              to={`/player/${p.steamID}`}
+              onClick={() => { setOpen(false); setInput(''); }}
+              className="block px-4 py-3 text-sm font-bold tracking-tight hover:bg-gray-50 dark:hover:bg-[#141414] transition-colors border-b border-gray-100 dark:border-gray-800 last:border-0"
+            >
+              {p.lastName}
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
-
-function SkeletonBlock({ rows = 5, cols = 3 }: { rows?: number; cols?: number }) {
-  return (
-    <table className="w-full">
-      <tbody>
-        {Array.from({ length: rows }).map((_, i) => (
-          <SkeletonRow key={i} columns={cols} />
-        ))}
-      </tbody>
-    </table>
-  );
-}
-
 
 const LeaderboardPage = () => {
   const { data: lb, isLoading: lbLoading, error: lbError } = useLeaderboard();
@@ -44,11 +88,17 @@ const LeaderboardPage = () => {
     <div className="bg-white dark:bg-[#0f0f0f] min-h-screen pb-32">
       <div className="container mx-auto px-4 md:px-8 pt-40">
 
-        <SectionHeader
-          title="Server Stats"
-          subtitle="Server statistics from the last 6 months."
-          accent="Leaderboard"
-        />
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-16">
+          <SectionHeader
+            title="Server Stats"
+            subtitle="Server statistics from the last 6 months."
+            accent="Leaderboard"
+            className="mb-0"
+          />
+          <div className="shrink-0 md:pt-8">
+            <PlayerSearch />
+          </div>
+        </div>
 
         {/* Stats Row */}
         <section className="mb-16">
@@ -68,11 +118,13 @@ const LeaderboardPage = () => {
                 label="Top Killer"
                 value={topKiller?.name ?? '—'}
                 suffix={topKiller ? ` (${topKiller.kills.toLocaleString()})` : ''}
+                href={topKiller ? `/player/${topKiller.steamID}` : undefined}
               />
               <StatBox
                 label="Top Medic"
                 value={topMedic?.name ?? '—'}
                 suffix={topMedic ? ` (${topMedic.revives.toLocaleString()})` : ''}
+                href={topMedic ? `/player/${topMedic.steamID}` : undefined}
               />
             </div>
           )}
@@ -147,12 +199,14 @@ const LeaderboardPage = () => {
                   </thead>
                   <tbody>
                     {lb.topKills.map((entry, i) => (
-                      <tr key={i} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors">
+                      <tr key={entry.steamID} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors">
                         <td className="py-3 pr-4 text-sm font-black text-gray-300 w-8">
                           {i + 1}
                         </td>
                         <td className="py-3 text-sm font-bold tracking-tight">
-                          {entry.name}
+                          <Link to={`/player/${entry.steamID}`} className="hover:text-[#e10600] transition-colors">
+                            {entry.name}
+                          </Link>
                         </td>
                         <td className="py-3 text-right text-sm font-black tabular-nums">
                           {entry.kills.toLocaleString()}
@@ -178,12 +232,14 @@ const LeaderboardPage = () => {
                   </thead>
                   <tbody>
                     {lb.topMedics.map((entry, i) => (
-                      <tr key={i} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors">
+                      <tr key={entry.steamID} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors">
                         <td className="py-3 pr-4 text-sm font-black text-gray-300 w-8">
                           {i + 1}
                         </td>
                         <td className="py-3 text-sm font-bold tracking-tight">
-                          {entry.name}
+                          <Link to={`/player/${entry.steamID}`} className="hover:text-[#e10600] transition-colors">
+                            {entry.name}
+                          </Link>
                         </td>
                         <td className="py-3 text-right text-sm font-black tabular-nums">
                           {entry.revives.toLocaleString()}
