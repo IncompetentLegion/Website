@@ -153,9 +153,10 @@ app.get("/api/players/search", searchLimiter, async (req, res) => {
     const cached = getCached(cacheKey);
     if (cached) return res.json(cached);
 
+    const sanitized = q.trim().replace(/[%_]/g, "\\$&");
     const [rows] = await pool.query(
       `SELECT steamID, lastName FROM DBLog_Players WHERE lastName LIKE ? LIMIT 10`,
-      [`%${q.trim()}%`],
+      [`%${sanitized}%`],
     );
 
     setCache(cacheKey, rows, CACHE_TTL_LIVE); // 1 min cache

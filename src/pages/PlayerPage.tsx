@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { SectionHeader, StatBox, Card, ErrorBox, SkeletonBlock } from '../components/UI';
+import { PlayerSearch } from '../components/PlayerSearch';
 import { usePlayerStats } from '../hooks/usePlayerStats';
 
 
@@ -23,11 +24,17 @@ const PlayerPage = () => {
     <div className="bg-white dark:bg-[#0f0f0f] min-h-screen pb-32">
       <div className="container mx-auto px-4 md:px-8 pt-40">
 
-        <SectionHeader
-          title={isLoading ? 'Loading...' : (player?.name ?? 'Unknown Player')}
-          accent="Player Stats"
-          titleClassName="text-3xl sm:text-5xl md:text-7xl 3xl:text-8xl 4xl:text-9xl"
-        />
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
+          <SectionHeader
+            title={isLoading ? 'Loading...' : (player?.name ?? 'Unknown Player')}
+            accent="Player Stats"
+            titleClassName="text-3xl sm:text-5xl md:text-7xl 3xl:text-8xl 4xl:text-9xl"
+            className="mb-0"
+          />
+          <div className="shrink-0 md:pt-8">
+            <PlayerSearch />
+          </div>
+        </div>
 
         <div className="mb-8">
           <Link
