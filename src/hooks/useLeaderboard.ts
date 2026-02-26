@@ -1,11 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 
 export interface KillEntry {
+  steamID: string;
   name: string;
   kills: number;
 }
 
 export interface MedicEntry {
+  steamID: string;
   name: string;
   revives: number;
 }

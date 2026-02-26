@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'outline' | 'ghost' | 'black';
@@ -52,14 +53,15 @@ export const Card: React.FC<{ children: React.ReactNode; className?: string; tit
   </div>
 );
 
-export const SectionHeader: React.FC<{ 
-    title: string; 
-    subtitle?: string; 
-    light?: boolean; 
+export const SectionHeader: React.FC<{
+    title: string;
+    subtitle?: string;
+    light?: boolean;
     centered?: boolean;
     accent?: string;
     className?: string;
-}> = ({ title, subtitle, light = false, centered = false, accent = "Incompetent Legion", className = '' }) => (
+    titleClassName?: string;
+}> = ({ title, subtitle, light = false, centered = false, accent = "Incompetent Legion", className = '', titleClassName = '' }) => (
   <div className={`${className || 'mb-16'} ${centered ? 'text-center flex flex-col items-center' : ''}`}>
     <div className={`flex items-center gap-4 mb-4 ${centered ? 'justify-center' : ''}`}>
       <div className="w-12 3xl:w-16 4xl:w-20 h-[3px] 3xl:h-[4px] 4xl:h-[5px] bg-[#e10600]"></div>
@@ -67,7 +69,7 @@ export const SectionHeader: React.FC<{
         {accent}
       </span>
     </div>
-    <h2 className={`text-5xl md:text-7xl 3xl:text-8xl 4xl:text-9xl font-black uppercase tracking-tighter leading-none ${light ? 'text-white' : 'text-black dark:text-gray-200'}`}>
+    <h2 className={`${titleClassName || 'text-5xl md:text-7xl 3xl:text-8xl 4xl:text-9xl'} font-black uppercase tracking-tighter leading-none ${light ? 'text-white' : 'text-black dark:text-gray-200'}`}>
       {title.split(' ').map((word, i) => (
           <span key={i} className={i === title.split(' ').length - 1 ? 'text-[#e10600]' : ''}>{word} </span>
       ))}
@@ -93,22 +95,40 @@ export const Badge: React.FC<{ children: React.ReactNode; color?: 'red' | 'black
     );
 };
 
-export const StatBox: React.FC<{ label: string; value: string | number; suffix?: string }> = ({ label, value, suffix }) => (
-    <div className="border-l-4 border-black dark:border-gray-500 pl-6 py-2">
-        <span className="block text-4xl font-black text-black dark:text-gray-200 tracking-tighter">
-            {value}{suffix && <span className="text-xl text-[#e10600]">{suffix}</span>}
-        </span>
-        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">
-            {label}
-        </span>
-    </div>
-);
+export const StatBox: React.FC<{ label: string; value: string | number; suffix?: string; href?: string }> = ({ label, value, suffix, href }) => {
+    const valueContent = (
+        <>
+            {value}{suffix && <span className="text-base md:text-xl text-[#e10600]">{suffix}</span>}
+        </>
+    );
+    return (
+        <div className="border-l-4 border-black dark:border-gray-500 pl-4 md:pl-6 py-2 min-w-0">
+            <span className="block text-2xl md:text-4xl font-black text-black dark:text-gray-200 tracking-tighter truncate">
+                {href ? (
+                    <Link to={href} className="hover:text-[#e10600] transition-colors">{valueContent}</Link>
+                ) : valueContent}
+            </span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">
+                {label}
+            </span>
+        </div>
+    );
+};
 
 export const DividerSVG: React.FC<{ className?: string; flipped?: boolean; bgClassName?: string }> = ({ className = "text-[#e10600]", flipped = false, bgClassName = "" }) => (
   <div className={`w-full h-16 overflow-hidden relative ${flipped ? 'rotate-180' : ''} ${bgClassName}`}>
     <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={`w-full h-full fill-current ${className}`}>
       <polygon points="0,100 0,80 100,0 100,100" />
     </svg>
+  </div>
+);
+
+export const ErrorBox: React.FC<{ message: string }> = ({ message }) => (
+  <div className="border-2 border-[#e10600] bg-red-50 dark:bg-red-950/30 p-6">
+    <p className="text-sm font-bold text-[#e10600] uppercase tracking-wider">
+      Failed to load data
+    </p>
+    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">{message}</p>
   </div>
 );
 
@@ -120,4 +140,14 @@ export const SkeletonRow: React.FC<{ columns: number }> = ({ columns }) => (
       </td>
     ))}
   </tr>
+);
+
+export const SkeletonBlock: React.FC<{ rows?: number; cols?: number }> = ({ rows = 5, cols = 3 }) => (
+  <table className="w-full">
+    <tbody>
+      {Array.from({ length: rows }).map((_, i) => (
+        <SkeletonRow key={i} columns={cols} />
+      ))}
+    </tbody>
+  </table>
 );
