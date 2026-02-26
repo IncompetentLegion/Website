@@ -96,6 +96,19 @@ export const Badge: React.FC<{ children: React.ReactNode; color?: 'red' | 'black
 };
 
 export const StatBox: React.FC<{ label: string; value: string | number; suffix?: string; href?: string }> = ({ label, value, suffix, href }) => {
+    const textRef = React.useRef<HTMLSpanElement>(null);
+
+    React.useEffect(() => {
+        const el = textRef.current;
+        if (!el) return;
+        el.style.transform = '';
+        if (el.scrollWidth > el.clientWidth) {
+            const scale = Math.max(0.5, el.clientWidth / el.scrollWidth);
+            el.style.transformOrigin = 'left';
+            el.style.transform = `scale(${scale})`;
+        }
+    }, [value, suffix]);
+
     const valueContent = (
         <>
             {value}{suffix && <span className="text-base md:text-xl text-[#e10600]">{suffix}</span>}
@@ -103,7 +116,7 @@ export const StatBox: React.FC<{ label: string; value: string | number; suffix?:
     );
     return (
         <div className="border-l-4 border-black dark:border-gray-500 pl-4 md:pl-6 py-2 min-w-0">
-            <span className="block text-2xl md:text-4xl font-black text-black dark:text-gray-200 tracking-tighter truncate">
+            <span ref={textRef} className="block text-2xl md:text-4xl font-black text-black dark:text-gray-200 tracking-tighter whitespace-nowrap overflow-hidden">
                 {href ? (
                     <Link to={href} className="hover:text-[#e10600] transition-colors">{valueContent}</Link>
                 ) : valueContent}

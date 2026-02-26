@@ -68,6 +68,8 @@ const PlayerPage = () => {
                 <StatBox label="Damage Dealt" value={Math.round(player.damage).toLocaleString()} />
                 <StatBox label="Matches Played" value={player.matchesPlayed.toLocaleString()} />
                 <StatBox label="Kills / Match" value={killsPerMatch} />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 mt-4 md:mt-8">
                 {player.topVictim && (
                   <StatBox
                     label="Favourite Victim"
