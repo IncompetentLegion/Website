@@ -1,12 +1,31 @@
-import { useParams, Link } from 'react-router-dom';
-import { SectionHeader, StatBox, Card, ErrorBox, SkeletonBlock } from '../components/UI';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
+import { SectionHeader, StatBox, Card, ErrorBox, SkeletonBlock, Badge } from '../components/UI';
 import { PlayerSearch } from '../components/PlayerSearch';
+import { StatsModeToggle } from '../components/StatsModeToggle';
 import { usePlayerStats } from '../hooks/usePlayerStats';
+import {
+  buildStatsHref,
+  getStatsModeLabel,
+  parseStatsMode,
+  usesMockStats,
+} from '../lib/statsMode';
 
+function getPlayerSubtitle(modeLabel: string, useMockData: boolean) {
+  if (useMockData) {
+    return `${modeLabel} player profile preview`;
+  }
+  return `Live ${modeLabel} player profile`;
+}
 
 const PlayerPage = () => {
   const { steamId } = useParams<{ steamId: string }>();
-  const { data: player, isLoading, error } = usePlayerStats(steamId ?? '');
+  const [searchParams] = useSearchParams();
+  const mode = parseStatsMode(searchParams.get('mode'));
+  const explicitMockPreview = searchParams.get('preview') === 'mock';
+  const useMockData = usesMockStats(mode, searchParams.get('preview'));
+  const modeLabel = getStatsModeLabel(mode);
+  const { data: player, isLoading, error } = usePlayerStats(steamId ?? '', mode, useMockData);
+  const playerError = error instanceof Error ? error.message : String(error);
 
   const kd = player
     ? player.deaths > 0
@@ -27,25 +46,51 @@ const PlayerPage = () => {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
           <SectionHeader
             title={isLoading ? 'Loading...' : (player?.name ?? 'Unknown Player')}
-            accent="Player Stats"
+            subtitle={getPlayerSubtitle(modeLabel, useMockData)}
+            accent={mode === 'spm' ? 'SPM Player Stats' : 'Vanilla Player Stats'}
             titleClassName="text-3xl sm:text-5xl md:text-7xl 3xl:text-8xl 4xl:text-9xl"
             className="mb-0"
           />
           <div className="shrink-0 md:pt-8">
-            <PlayerSearch />
+            <PlayerSearch mode={mode} previewMock={explicitMockPreview} />
           </div>
         </div>
 
+        {steamId && (
+          <section className="mb-8">
+            <StatsModeToggle
+              basePath={`/player/${steamId}`}
+              mode={mode}
+              previewMock={explicitMockPreview}
+              className="max-w-xl"
+            />
+          </section>
+        )}
+
         <div className="mb-8">
           <Link
-            to="/leaderboard"
+            to={buildStatsHref('/leaderboard', mode, explicitMockPreview)}
             className="text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-[#e10600] transition-colors"
           >
             &larr; Back to Leaderboard
           </Link>
         </div>
 
-        {error && <ErrorBox message={String(error)} />}
+        {useMockData && (
+          <div className="bg-gray-50 dark:bg-[#141414] p-6 border-l-4 border-black dark:border-gray-500 mb-8">
+            <div className="flex flex-wrap items-center gap-3">
+              <Badge color={mode === 'spm' ? 'red' : 'black'}>{modeLabel}</Badge>
+              <Badge color="black">Preview Data</Badge>
+            </div>
+            <p className="mt-4 text-xs font-bold text-gray-500 leading-relaxed uppercase tracking-widest">
+              {mode === 'spm'
+                ? 'This player profile is using frontend mock SPM data for preview purposes only.'
+                : 'Preview mode is forcing mock Vanilla data on this player page.'}
+            </p>
+          </div>
+        )}
+
+        {error && <ErrorBox message={playerError} />}
 
         {/* Skeleton loading state */}
         {isLoading && (
@@ -64,6 +109,11 @@ const PlayerPage = () => {
 
         {player && (
           <>
+            <div className="flex flex-wrap items-center gap-3 mb-8">
+              <Badge color={mode === 'spm' ? 'red' : 'black'}>{modeLabel}</Badge>
+              <Badge color="gray">{player.steamID}</Badge>
+            </div>
+
             {/* Stats grid */}
             <section className="mb-16">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
@@ -82,7 +132,7 @@ const PlayerPage = () => {
                     label="Favourite Victim"
                     value={player.topVictim.name}
                     suffix={` (${player.topVictim.kills})`}
-                    href={`/player/${player.topVictim.steamID}`}
+                    href={buildStatsHref(`/player/${player.topVictim.steamID}`, mode, explicitMockPreview)}
                   />
                 )}
                 {player.nemesis && (
@@ -90,7 +140,7 @@ const PlayerPage = () => {
                     label="Nemesis"
                     value={player.nemesis.name}
                     suffix={` (${player.nemesis.kills})`}
-                    href={`/player/${player.nemesis.steamID}`}
+                    href={buildStatsHref(`/player/${player.nemesis.steamID}`, mode, explicitMockPreview)}
                   />
                 )}
                 {player.mostRevived && (
@@ -98,7 +148,7 @@ const PlayerPage = () => {
                     label="Most Revived"
                     value={player.mostRevived.name}
                     suffix={` (${player.mostRevived.revives})`}
-                    href={`/player/${player.mostRevived.steamID}`}
+                    href={buildStatsHref(`/player/${player.mostRevived.steamID}`, mode, explicitMockPreview)}
                   />
                 )}
                 {player.mostRevivedBy && (
@@ -106,7 +156,7 @@ const PlayerPage = () => {
                     label="Most Revived By"
                     value={player.mostRevivedBy.name}
                     suffix={` (${player.mostRevivedBy.revives})`}
-                    href={`/player/${player.mostRevivedBy.steamID}`}
+                    href={buildStatsHref(`/player/${player.mostRevivedBy.steamID}`, mode, explicitMockPreview)}
                   />
                 )}
               </div>

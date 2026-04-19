@@ -25,9 +25,10 @@ const RulesPage: React.FC = () => {
                             <ul className="space-y-4">
                                 {[
                                   "Don't be a dick",
-                                  "Cheating, exploiting, glitch and bug abuse is forbidden",
-                                  "Racism and other abusive language is not allowed",
-                                  "Ghosting or leaking intel to the enemy team is strictly forbidden."
+                                  "Cheating, exploiting, glitch and bug abuse is forbidden.",
+                                  "Racism and other abusive language is forbidden.",
+                                  "Ghosting, asset wasting or whatever admins deem to be griefing is not allowed. This includes heli ramming.",
+                                  "Main camping by vehicles or FOBs is strictly prohibited."
                                 ].map((rule, i) => (
                                     <li key={i} className="flex gap-4 group">
                                         <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-[#e10600] mt-2 group-hover:scale-150 transition-transform"></div>
@@ -38,13 +39,14 @@ const RulesPage: React.FC = () => {
                         </div>
                         <div>
                             <h4 className="text-xl 3xl:text-2xl 4xl:text-3xl font-black uppercase tracking-tighter mb-6 flex items-center gap-3">
-                                <span className="text-[#e10600]">/</span> Tactical Communication
+                                <span className="text-[#e10600]">/</span> Squad Lead Standards
                             </h4>
                             <ul className="space-y-4">
                                 {[
                                   "Squad Leaders MUST have a working microphone.",
-                                  "English only in Command and Global chat channels.",
-                                  "No mic spamming during staging phase or end of round"
+                                  "Squad Leaders must speak English in command chat. You may use another language in squad chat if you make it clear.",
+                                  "Squad Leaders must equip a squad leader kit at all times.",
+                                  "No annoying mic spamming during staging. Music is allowed as hype for round start."
                                 ].map((rule, i) => (
                                     <li key={i} className="flex gap-4 group">
                                         <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-black dark:bg-gray-400 mt-2 group-hover:scale-150 transition-transform"></div>
@@ -62,16 +64,15 @@ const RulesPage: React.FC = () => {
                         <div className="grid md:grid-cols-2 gap-12">
                             <div>
                                 <h4 className="text-xl 3xl:text-2xl 4xl:text-3xl font-black uppercase tracking-tighter mb-6 flex items-center gap-3">
-                                    <span className="text-[#e10600]">/</span> Claiming Rights
+                                    <span className="text-[#e10600]">/</span> Vehicle & Claim Rules
                                 </h4>
                                 <ul className="space-y-4">
                                     {[
-                                      "Vehicles are claimed at first come first serve basis",
-                                      "Vehicles on spawn timers may be claimed in chat and you have to be in main on respawn to claim it",
-                                      "Do not one man vehicles that require a crewman kit",
-                                      "One squad may only claim one vehicle requiring a crewman kit at the start of the match",
-                                      "LOGI squads can only claim logis after staging phase, inf squads have the priority",
-                                      "Mechanized infantry squads are allowed"
+                                      "The first squad to name themselves after a specific vehicle has the claim to it.",
+                                      "You may not recall a vehicle if it has already left main before your claim was made.",
+                                      "If you do not use your claimed vehicle for 3 minutes, your claim will expire.",
+                                      "Crewman kit vehicles require 2 users. All other vehicles can be one manned.",
+                                      "Do not 1 man logis at the start of the game. Once the game has begun, 1 manning is allowed."
                                     ].map((rule, i) => (
                                         <li key={i} className="flex gap-4 group">
                                             <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-[#e10600] mt-2"></div>
@@ -83,7 +84,7 @@ const RulesPage: React.FC = () => {
                             <div className="bg-gray-50 dark:bg-[#141414] p-6 border-l-4 border-black dark:border-gray-500">
                                 <Badge color="black">IMPORTANT</Badge>
                                 <p className="mt-4 text-xs 3xl:text-sm 4xl:text-base font-bold text-gray-500 dark:text-gray-400 leading-relaxed uppercase tracking-widest">
-                                    Main camping is regulated by common sense. You must allow enemies to leave their protection zone. Admins use discretion based on current layer geometry.
+                                    Infantry may approach main only if it is not used to block the enemy team's only exit from main. If admins judge the situation to be griefing, rule 1 applies.
                                 </p>
                             </div>
                         </div>

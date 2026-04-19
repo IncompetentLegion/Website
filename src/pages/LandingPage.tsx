@@ -1,13 +1,17 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, SectionHeader, DividerSVG, StatBox, Badge } from '../components/UI';
+import { Button, SectionHeader, DividerSVG, Badge } from '../components/UI';
 import logoRes from '../assets/logores.webp';
 import heroBan from '../assets/heroban.webp';
+import squadOfficialLogo from '../assets/squad-official-logo.webp';
+import supermodLogoSmall from '../assets/supermod-logo-small.webp';
 
 const LandingPage: React.FC = () => {
   const HERO_IMAGE_URL = logoRes;
   const WHO_ARE_WE_BANNER_URL = heroBan;
+  const VANILLA_LOGO_URL = squadOfficialLogo;
+  const SUPERMOD_LOGO_URL = supermodLogoSmall;
 
   return (
     <div className="overflow-hidden bg-white dark:bg-[#0f0f0f]">
@@ -58,6 +62,140 @@ const LandingPage: React.FC = () => {
       </section>
 
       <DividerSVG className="text-black dark:text-[#0f0f0f]" />
+
+      <section className="py-24 md:py-32 bg-[#f8f8f8] dark:bg-[#141414] relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid opacity-[0.04]"></div>
+        <div className="container mx-auto px-4 md:px-8 relative z-10">
+          <SectionHeader
+            title={"Two Servers One\u00A0Community"}
+            subtitle="Incompetent Legion runs both a classic Vanilla server and a dedicated Supermod server. Pick the style you want without leaving the community."
+            accent="Server Modes"
+          />
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10">
+            <div className="bg-white dark:bg-[#1a1a1a] border-2 border-black dark:border-gray-700 p-8 md:p-10 shadow-[12px_12px_0px_rgba(0,0,0,0.06)] flex flex-col h-full">
+              <div className="flex items-start justify-between gap-4 mb-8">
+                <div>
+                  <Badge color="black">Vanilla</Badge>
+                  <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter mt-4 mb-3 text-black dark:text-gray-200">
+                    Classic Squad
+                  </h3>
+                  <p className="text-sm md:text-base font-medium text-gray-500 dark:text-gray-400 leading-relaxed max-w-xl">
+                    Standard Squad pacing, familiar factions, and the core experience most players already know. This is the default server for players who want the established game flow.
+                  </p>
+                </div>
+                <div className="hidden sm:flex h-16 w-16 md:h-20 md:w-20 items-center justify-center border-2 border-black dark:border-gray-700 bg-[#f8f8f8] dark:bg-[#111111] p-3 shrink-0">
+                  <img
+                    src={VANILLA_LOGO_URL}
+                    alt="Squad official logo"
+                    className="w-full h-full object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                <div className="border-l-4 border-black dark:border-gray-500 pl-4 py-2">
+                  <span className="block text-2xl font-black tracking-tighter text-black dark:text-gray-200">Core</span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Gameplay</span>
+                </div>
+                <div className="border-l-4 border-black dark:border-gray-500 pl-4 py-2">
+                  <span className="block text-2xl font-black tracking-tighter text-black dark:text-gray-200">Known</span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Layers</span>
+                </div>
+                <div className="border-l-4 border-black dark:border-gray-500 pl-4 py-2">
+                  <span className="block text-2xl font-black tracking-tighter text-black dark:text-gray-200">Default</span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Experience</span>
+                </div>
+              </div>
+
+              <div className="space-y-4 mb-8">
+                {[
+                  'Standard Squad gameplay and familiar match pacing.',
+                  'Best fit if you want the classic public-server experience.',
+                  'Vanilla leaderboard and player stats are tracked separately from Supermod.',
+                ].map((item) => (
+                  <div key={item} className="flex gap-4 group">
+                    <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-black mt-2"></div>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
+                      {item}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <Link to="/leaderboard?mode=vanilla" className="inline-flex mt-auto">
+                <Button variant="black" size="lg">View Vanilla Stats</Button>
+              </Link>
+            </div>
+
+            <div className="bg-black text-white border-2 border-black dark:border-gray-700 p-8 md:p-10 shadow-[12px_12px_0px_rgba(225,6,0,0.2)] relative overflow-hidden flex flex-col h-full">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-[#e10600]/10 rounded-full blur-3xl"></div>
+              <div className="flex items-start justify-between gap-4 mb-8 relative z-10">
+                <div>
+                  <Badge color="red">SPM</Badge>
+                  <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter mt-4 mb-3">
+                    Supermod
+                  </h3>
+                  <p className="text-sm md:text-base font-medium text-gray-400 leading-relaxed max-w-xl">
+                    Tactical Collective&apos;s Supermod is built as a more expansive, realism-focused experience with heavier content, custom mechanics, and a wider battlefield sandbox.
+                  </p>
+                </div>
+                <div className="hidden sm:flex h-16 w-16 md:h-20 md:w-20 items-center justify-center border border-white/10 bg-white/5 p-2 shrink-0">
+                  <img
+                    src={SUPERMOD_LOGO_URL}
+                    alt="Supermod logo"
+                    className="w-full h-full object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 relative z-10">
+                <div className="border-l-4 border-[#e10600] pl-4 py-2">
+                  <span className="block text-2xl font-black tracking-tighter">32</span>
+                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Factions</span>
+                </div>
+                <div className="border-l-4 border-[#e10600] pl-4 py-2">
+                  <span className="block text-2xl font-black tracking-tighter">100+</span>
+                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Vehicles</span>
+                </div>
+                <div className="border-l-4 border-[#e10600] pl-4 py-2">
+                  <span className="block text-2xl font-black tracking-tighter">100+</span>
+                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Weapons</span>
+                </div>
+              </div>
+
+              <div className="space-y-4 mb-8 relative z-10">
+                {[
+                  'Expanded factions, vehicles, optics, helicopters, and commander assets.',
+                  'A complete overhaul of the ICO to make weapon handling more enjoyable.',
+                  'Custom mechanics like weapon tilt, lower and raise weapon, tank zeroing, periscope systems, and dedicated special-forces gameplay.',
+                ].map((item) => (
+                  <div key={item} className="flex gap-4 group">
+                    <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-[#e10600] mt-2"></div>
+                    <p className="text-sm font-medium text-gray-300 leading-relaxed">
+                      {item}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 relative z-10 mt-auto">
+                <Link to="/leaderboard?mode=spm" className="inline-flex">
+                  <Button variant="primary" size="lg">View SPM Stats</Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-[#1a1a1a] border-l-4 border-[#e10600] p-6 md:p-8">
+            <p className="text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-gray-500 dark:text-gray-400 leading-relaxed">
+              One Discord, one community, two different gameplay tracks. Join the server that matches your mood instead of choosing between different communities.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* Who Are We Section */}
       <section className="py-32 bg-black text-white relative overflow-hidden">

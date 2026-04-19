@@ -1,33 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
+import { getMockLive } from "../data/mockStats";
+import { fetchJsonOrThrow } from "../lib/api";
+import type { StatsMode } from "../lib/statsMode";
+import type { LiveData, MatchInfo } from "../lib/statsTypes";
 
-export interface MatchInfo {
-  layer: string;
-  map?: string;
-  mapClassname: string;
-  layerClassname?: string;
-  dlc?: string;
-  startTime: string;
-  endTime?: string;
-  winner?: string;
+export type { MatchInfo, LiveData };
+
+async function fetchLive(mode: StatsMode): Promise<LiveData> {
+  return fetchJsonOrThrow<LiveData>(`/api/live?mode=${encodeURIComponent(mode)}`);
 }
 
-export interface LiveData {
-  currentMatch: MatchInfo | null;
-  recentMatches: MatchInfo[];
-}
-
-async function fetchLive(): Promise<LiveData> {
-  const res = await fetch("/api/live");
-  if (!res.ok) {
-    throw new Error(`Live data request failed (${res.status})`);
-  }
-  return res.json();
-}
-
-export function useLive() {
+export function useLive(mode: StatsMode, useMockData = false) {
   return useQuery<LiveData>({
-    queryKey: ["live"],
-    queryFn: fetchLive,
+    queryKey: ["live", mode, useMockData ? "mock" : "live"],
+    queryFn: () =>
+      useMockData ? Promise.resolve(getMockLive(mode)) : fetchLive(mode),
     staleTime: 60 * 1000,
     refetchInterval: 60 * 1000,
   });
