@@ -61,7 +61,8 @@ export const SectionHeader: React.FC<{
     accent?: string;
     className?: string;
     titleClassName?: string;
-}> = ({ title, subtitle, light = false, centered = false, accent = "Incompetent Legion", className = '', titleClassName = '' }) => (
+    highlightWord?: 'first' | 'last' | 'none';
+}> = ({ title, subtitle, light = false, centered = false, accent = "Incompetent Legion", className = '', titleClassName = '', highlightWord = 'last' }) => (
   <div className={`${className || 'mb-16'} ${centered ? 'text-center flex flex-col items-center' : ''}`}>
     <div className={`flex items-center gap-4 mb-4 ${centered ? 'justify-center' : ''}`}>
       <div className="w-12 3xl:w-16 4xl:w-20 h-[3px] 3xl:h-[4px] 4xl:h-[5px] bg-[#e10600]"></div>
@@ -70,8 +71,19 @@ export const SectionHeader: React.FC<{
       </span>
     </div>
     <h2 className={`${titleClassName || 'text-5xl md:text-7xl 3xl:text-8xl 4xl:text-9xl'} font-black uppercase tracking-tighter leading-none ${light ? 'text-white' : 'text-black dark:text-gray-200'}`}>
-      {title.split(' ').map((word, i) => (
-          <span key={i} className={i === title.split(' ').length - 1 ? 'text-[#e10600]' : ''}>{word} </span>
+      {title.split(' ').map((word, i, words) => (
+          <span
+            key={i}
+            className={
+              highlightWord === 'first'
+                ? i === 0 ? 'text-[#e10600]' : ''
+                : highlightWord === 'last'
+                  ? i === words.length - 1 ? 'text-[#e10600]' : ''
+                  : ''
+            }
+          >
+            {word}{" "}
+          </span>
       ))}
     </h2>
     {subtitle && (

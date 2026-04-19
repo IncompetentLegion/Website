@@ -1,9 +1,22 @@
-
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { SectionHeader, Card, Badge, StatBox, ErrorBox, SkeletonBlock } from '../components/UI';
 import { PlayerSearch } from '../components/PlayerSearch';
+import { StatsModeToggle } from '../components/StatsModeToggle';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 import { useLive } from '../hooks/useLive';
+import {
+  buildStatsHref,
+  getStatsModeLabel,
+  parseStatsMode,
+  usesMockStats,
+} from '../lib/statsMode';
+
+function getStatsSubtitle(modeLabel: string, useMockData: boolean) {
+  if (useMockData) {
+    return `${modeLabel} preview data for UI review before touching live services.`;
+  }
+  return `Live ${modeLabel} server statistics from the last 6 months.`;
+}
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString('en-US', {
@@ -12,8 +25,16 @@ function formatDate(iso: string) {
 }
 
 const LeaderboardPage = () => {
-  const { data: lb, isLoading: lbLoading, error: lbError } = useLeaderboard();
-  const { data: live, isLoading: liveLoading, error: liveError } = useLive();
+  const [searchParams] = useSearchParams();
+  const mode = parseStatsMode(searchParams.get('mode'));
+  const explicitMockPreview = searchParams.get('preview') === 'mock';
+  const useMockData = usesMockStats(mode, searchParams.get('preview'));
+  const modeLabel = getStatsModeLabel(mode);
+
+  const { data: lb, isLoading: lbLoading, error: lbError } = useLeaderboard(mode, useMockData);
+  const { data: live, isLoading: liveLoading, error: liveError } = useLive(mode, useMockData);
+  const leaderboardError = lbError instanceof Error ? lbError.message : String(lbError);
+  const liveErrorMessage = liveError instanceof Error ? liveError.message : String(liveError);
 
   const topKiller = lb?.topKills?.[0];
   const topMedic = lb?.topMedics?.[0];
@@ -24,15 +45,41 @@ const LeaderboardPage = () => {
 
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-16">
           <SectionHeader
-            title="Server Stats"
-            subtitle="Server statistics from the last 6 months."
-            accent="Leaderboard"
+            title={`${modeLabel} Stats`}
+            subtitle={getStatsSubtitle(modeLabel, useMockData)}
+            accent={mode === 'spm' ? 'Supermod Leaderboard' : 'Vanilla Leaderboard'}
             className="mb-0"
+            highlightWord="first"
           />
           <div className="shrink-0 md:pt-8">
-            <PlayerSearch />
+            <PlayerSearch mode={mode} previewMock={explicitMockPreview} />
           </div>
         </div>
+
+        <section className="mb-8">
+          <StatsModeToggle
+            basePath="/leaderboard"
+            mode={mode}
+            previewMock={explicitMockPreview}
+            className="max-w-xl"
+          />
+        </section>
+
+        {useMockData && (
+          <section className="mb-10">
+            <div className="bg-gray-50 dark:bg-[#141414] p-6 border-l-4 border-black dark:border-gray-500">
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge color={mode === 'spm' ? 'red' : 'black'}>{modeLabel}</Badge>
+                <Badge color="black">Preview Data</Badge>
+              </div>
+              <p className="mt-4 text-xs font-bold text-gray-500 leading-relaxed uppercase tracking-widest">
+                {mode === 'spm'
+                  ? 'SPM is currently rendered from frontend mock data so you can review the interface without hitting the live Supermod database.'
+                  : 'Preview mode is forcing mock data for Vanilla so you can review the layout without relying on the live database.'}
+              </p>
+            </div>
+          </section>
+        )}
 
         {/* Stats Row */}
         <section className="mb-16">
@@ -52,13 +99,13 @@ const LeaderboardPage = () => {
                 label="Top Killer"
                 value={topKiller?.name ?? '—'}
                 suffix={topKiller ? ` (${topKiller.kills.toLocaleString()})` : ''}
-                href={topKiller ? `/player/${topKiller.steamID}` : undefined}
+                href={topKiller ? buildStatsHref(`/player/${topKiller.steamID}`, mode, explicitMockPreview) : undefined}
               />
               <StatBox
                 label="Top Medic"
                 value={topMedic?.name ?? '—'}
                 suffix={topMedic ? ` (${topMedic.revives.toLocaleString()})` : ''}
-                href={topMedic ? `/player/${topMedic.steamID}` : undefined}
+                href={topMedic ? buildStatsHref(`/player/${topMedic.steamID}`, mode, explicitMockPreview) : undefined}
               />
             </div>
           )}
@@ -66,13 +113,14 @@ const LeaderboardPage = () => {
 
         {/* Current Match */}
         <section className="mb-16">
-          {liveError && <ErrorBox message={String(liveError)} />}
+          {liveError && <ErrorBox message={liveErrorMessage} />}
           {liveLoading && <SkeletonBlock rows={2} cols={4} />}
           {live?.currentMatch && (
             <Card title="Current Match">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
                 <div>
                   <div className="flex items-center gap-3 mb-3">
+                    <Badge color={mode === 'spm' ? 'red' : 'black'}>{modeLabel}</Badge>
                     <Badge color="red">Live</Badge>
                     {live.currentMatch.dlc && (
                       <Badge color="black">{live.currentMatch.dlc}</Badge>
@@ -117,38 +165,40 @@ const LeaderboardPage = () => {
 
         {/* Leaderboards — two-column grid */}
         <section className="mb-16">
-          {lbError && <ErrorBox message={String(lbError)} />}
+          {lbError && <ErrorBox message={leaderboardError} />}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Most Kills */}
             <Card title="Most Kills">
               {lbLoading && <SkeletonBlock rows={10} cols={2} />}
               {lb?.topKills && (
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b-2 border-black dark:border-gray-600">
-                      <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3 pr-4">#</th>
-                      <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Player</th>
-                      <th className="text-right text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Kills</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {lb.topKills.map((entry, i) => (
-                      <tr key={entry.steamID} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors">
-                        <td className="py-3 pr-4 text-sm font-black text-gray-300 w-8">
-                          {i + 1}
-                        </td>
-                        <td className="py-3 text-sm font-bold tracking-tight">
-                          <Link to={`/player/${entry.steamID}`} className="hover:text-[#e10600] transition-colors">
-                            {entry.name}
-                          </Link>
-                        </td>
-                        <td className="py-3 text-right text-sm font-black tabular-nums">
-                          {entry.kills.toLocaleString()}
-                        </td>
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[320px]">
+                    <thead>
+                      <tr className="border-b-2 border-black dark:border-gray-600">
+                        <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3 pr-4">#</th>
+                        <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Player</th>
+                        <th className="text-right text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Kills</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {lb.topKills.map((entry, i) => (
+                        <tr key={entry.steamID} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors">
+                          <td className="py-3 pr-4 text-sm font-black text-gray-300 w-8">
+                            {i + 1}
+                          </td>
+                          <td className="py-3 text-sm font-bold tracking-tight">
+                            <Link to={buildStatsHref(`/player/${entry.steamID}`, mode, explicitMockPreview)} className="hover:text-[#e10600] transition-colors">
+                              {entry.name}
+                            </Link>
+                          </td>
+                          <td className="py-3 text-right text-sm font-black tabular-nums">
+                            {entry.kills.toLocaleString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </Card>
 
@@ -156,32 +206,34 @@ const LeaderboardPage = () => {
             <Card title="Top Medic">
               {lbLoading && <SkeletonBlock rows={10} cols={2} />}
               {lb?.topMedics && (
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b-2 border-black dark:border-gray-600">
-                      <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3 pr-4">#</th>
-                      <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Player</th>
-                      <th className="text-right text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Revives</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {lb.topMedics.map((entry, i) => (
-                      <tr key={entry.steamID} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors">
-                        <td className="py-3 pr-4 text-sm font-black text-gray-300 w-8">
-                          {i + 1}
-                        </td>
-                        <td className="py-3 text-sm font-bold tracking-tight">
-                          <Link to={`/player/${entry.steamID}`} className="hover:text-[#e10600] transition-colors">
-                            {entry.name}
-                          </Link>
-                        </td>
-                        <td className="py-3 text-right text-sm font-black tabular-nums">
-                          {entry.revives.toLocaleString()}
-                        </td>
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[320px]">
+                    <thead>
+                      <tr className="border-b-2 border-black dark:border-gray-600">
+                        <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3 pr-4">#</th>
+                        <th className="text-left text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Player</th>
+                        <th className="text-right text-[10px] font-black uppercase tracking-widest text-gray-400 pb-3">Revives</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {lb.topMedics.map((entry, i) => (
+                        <tr key={entry.steamID} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] transition-colors">
+                          <td className="py-3 pr-4 text-sm font-black text-gray-300 w-8">
+                            {i + 1}
+                          </td>
+                          <td className="py-3 text-sm font-bold tracking-tight">
+                            <Link to={buildStatsHref(`/player/${entry.steamID}`, mode, explicitMockPreview)} className="hover:text-[#e10600] transition-colors">
+                              {entry.name}
+                            </Link>
+                          </td>
+                          <td className="py-3 text-right text-sm font-black tabular-nums">
+                            {entry.revives.toLocaleString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </Card>
           </div>
@@ -190,7 +242,7 @@ const LeaderboardPage = () => {
         {/* Recent Match History */}
         <section className="mb-16">
           <Card title="Recent Matches">
-            {liveError && <ErrorBox message={String(liveError)} />}
+            {liveError && <ErrorBox message={liveErrorMessage} />}
             {liveLoading && <SkeletonBlock rows={6} cols={5} />}
             {live?.recentMatches && (
               <div className="overflow-x-auto">

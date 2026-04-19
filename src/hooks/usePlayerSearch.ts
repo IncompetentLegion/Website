@@ -1,22 +1,31 @@
 import { useQuery } from "@tanstack/react-query";
+import { getMockSearchResults } from "../data/mockStats";
+import { fetchJsonOrThrow } from "../lib/api";
+import type { StatsMode } from "../lib/statsMode";
+import type { PlayerSearchResult } from "../lib/statsTypes";
 
-export interface PlayerSearchResult {
-  steamID: string;
-  lastName: string;
+export type { PlayerSearchResult };
+
+async function searchPlayers(
+  query: string,
+  mode: StatsMode,
+): Promise<PlayerSearchResult[]> {
+  return fetchJsonOrThrow<PlayerSearchResult[]>(
+    `/api/players/search?q=${encodeURIComponent(query)}&mode=${encodeURIComponent(mode)}`,
+  );
 }
 
-async function searchPlayers(query: string): Promise<PlayerSearchResult[]> {
-  const res = await fetch(`/api/players/search?q=${encodeURIComponent(query)}`);
-  if (!res.ok) {
-    throw new Error(`Search request failed (${res.status})`);
-  }
-  return res.json();
-}
-
-export function usePlayerSearch(query: string) {
+export function usePlayerSearch(
+  query: string,
+  mode: StatsMode,
+  useMockData = false,
+) {
   return useQuery<PlayerSearchResult[]>({
-    queryKey: ["playerSearch", query],
-    queryFn: () => searchPlayers(query),
+    queryKey: ["playerSearch", mode, query, useMockData ? "mock" : "live"],
+    queryFn: () =>
+      useMockData
+        ? Promise.resolve(getMockSearchResults(mode, query))
+        : searchPlayers(query, mode),
     enabled: query.length >= 3,
     staleTime: 30 * 1000,
   });

@@ -9,7 +9,15 @@ import { resolveWeaponName } from "./weapon-map.js";
 
 const app = express();
 const PORT = process.env.PORT || 7000;
-const SERVER_ID = 1;
+
+function parseServerId(value, fallback) {
+  const parsed = Number.parseInt(value ?? "", 10);
+  return Number.isInteger(parsed) ? parsed : fallback;
+}
+
+function parseMode(value) {
+  return value === "spm" ? "spm" : "vanilla";
+}
 
 // __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -18,8 +26,20 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
 
-// MySQL connection pool
-const pool = mysql.createPool(process.env.DATABASE_URL);
+const databaseSources = {
+  vanilla: {
+    mode: "vanilla",
+    pool: mysql.createPool(process.env.DATABASE_URL),
+    serverId: parseServerId(process.env.SERVER_ID, 1),
+  },
+  spm: process.env.SU_DATABASE_URL
+    ? {
+        mode: "spm",
+        pool: mysql.createPool(process.env.SU_DATABASE_URL),
+        serverId: parseServerId(process.env.SU_SERVER_ID, 1),
+      }
+    : null,
+};
 
 // Simple in-memory cache with per-key TTL
 const CACHE_TTL_LEADERBOARD = 60 * 60 * 1000; // 60 minutes
@@ -38,6 +58,21 @@ function setCache(key, data, ttl) {
   cache[key] = { data, timestamp: Date.now(), ttl };
 }
 
+function getDataSource(req) {
+  const mode = parseMode(req.query.mode);
+  const source = databaseSources[mode];
+
+  if (!source) {
+    const error = new Error(
+      "Supermod database is not configured. Set SU_DATABASE_URL to enable mode=spm.",
+    );
+    error.statusCode = 503;
+    throw error;
+  }
+
+  return source;
+}
+
 const searchLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 20,
@@ -49,7 +84,9 @@ const searchLimiter = rateLimit({
 // API routes (must come before SPA catch-all)
 app.get("/api/leaderboard", async (req, res) => {
   try {
-    const cached = getCached("leaderboard");
+    const source = getDataSource(req);
+    const { mode, pool, serverId } = source;
+    const cached = getCached(`${mode}:leaderboard`);
     if (cached) {
       return res.json(cached);
     }
@@ -67,7 +104,7 @@ app.get("/api/leaderboard", async (req, res) => {
          GROUP BY d.attacker
          ORDER BY kills DESC
          LIMIT 15`,
-        [SERVER_ID],
+        [serverId],
       ),
       pool.query(
         `SELECT r.reviver AS steamID, MAX(r.reviverName) AS name, COUNT(*) AS revives
@@ -80,7 +117,7 @@ app.get("/api/leaderboard", async (req, res) => {
          GROUP BY r.reviver
          ORDER BY revives DESC
          LIMIT 15`,
-        [SERVER_ID],
+        [serverId],
       ),
       pool.query("SELECT COUNT(*) AS total FROM DBLog_Players"),
     ]);
@@ -91,17 +128,21 @@ app.get("/api/leaderboard", async (req, res) => {
       uniquePlayers: playersRow[0].total,
     };
 
-    setCache("leaderboard", result, CACHE_TTL_LEADERBOARD);
+    setCache(`${mode}:leaderboard`, result, CACHE_TTL_LEADERBOARD);
     res.json(result);
   } catch (err) {
     console.error("Leaderboard query failed:", err);
-    res.status(500).json({ error: "Failed to fetch leaderboard data" });
+    res
+      .status(err.statusCode || 500)
+      .json({ error: err.message || "Failed to fetch leaderboard data" });
   }
 });
 
 app.get("/api/live", async (req, res) => {
   try {
-    const cached = getCached("live");
+    const source = getDataSource(req);
+    const { mode, pool, serverId } = source;
+    const cached = getCached(`${mode}:live`);
     if (cached) {
       return res.json(cached);
     }
@@ -113,7 +154,7 @@ app.get("/api/live", async (req, res) => {
          WHERE server = ? AND endTime IS NULL
          ORDER BY startTime DESC
          LIMIT 1`,
-        [SERVER_ID],
+        [serverId],
       ),
       pool.query(
         `SELECT layerClassname, startTime, endTime, winner
@@ -123,7 +164,7 @@ app.get("/api/live", async (req, res) => {
            AND layerClassname NOT LIKE '%Seed%'
          ORDER BY endTime DESC
          LIMIT 10`,
-        [SERVER_ID],
+        [serverId],
       ),
     ]);
 
@@ -132,16 +173,20 @@ app.get("/api/live", async (req, res) => {
       recentMatches: recentRows,
     };
 
-    setCache("live", result, CACHE_TTL_LIVE);
+    setCache(`${mode}:live`, result, CACHE_TTL_LIVE);
     res.json(result);
   } catch (err) {
     console.error("Live query failed:", err);
-    res.status(500).json({ error: "Failed to fetch live data" });
+    res
+      .status(err.statusCode || 500)
+      .json({ error: err.message || "Failed to fetch live data" });
   }
 });
 
 app.get("/api/players/search", searchLimiter, async (req, res) => {
   try {
+    const source = getDataSource(req);
+    const { mode, pool } = source;
     const q = req.query.q;
     if (!q || typeof q !== "string" || q.trim().length < 3) {
       return res
@@ -149,7 +194,7 @@ app.get("/api/players/search", searchLimiter, async (req, res) => {
         .json({ error: "Query must be at least 3 characters" });
     }
 
-    const cacheKey = `search:${q.trim().toLowerCase()}`;
+    const cacheKey = `${mode}:search:${q.trim().toLowerCase()}`;
     const cached = getCached(cacheKey);
     if (cached) return res.json(cached);
 
@@ -163,17 +208,21 @@ app.get("/api/players/search", searchLimiter, async (req, res) => {
     res.json(rows);
   } catch (err) {
     console.error("Player search failed:", err);
-    res.status(500).json({ error: "Failed to search players" });
+    res
+      .status(err.statusCode || 500)
+      .json({ error: err.message || "Failed to search players" });
   }
 });
 
 app.get("/api/player/:steamId", async (req, res) => {
   try {
+    const source = getDataSource(req);
+    const { mode, pool, serverId } = source;
     const { steamId } = req.params;
     if (!/^\d{17}$/.test(steamId)) {
       return res.status(400).json({ error: "Invalid Steam ID" });
     }
-    const cacheKey = `player:${steamId}`;
+    const cacheKey = `${mode}:player:${steamId}`;
     const cached = getCached(cacheKey);
     if (cached) return res.json(cached);
 
@@ -206,7 +255,7 @@ app.get("/api/player/:steamId", async (req, res) => {
            AND m.layerClassname NOT LIKE '%Seed%'
            AND d.time >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
            AND d.time <= DATE_SUB(NOW(), INTERVAL 2 HOUR)`,
-        [steamId, SERVER_ID],
+        [steamId, serverId],
       ),
       pool.query(
         `SELECT COUNT(*) AS revives
@@ -217,7 +266,7 @@ app.get("/api/player/:steamId", async (req, res) => {
            AND m.layerClassname NOT LIKE '%Seed%'
            AND r.time >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
            AND r.time <= DATE_SUB(NOW(), INTERVAL 2 HOUR)`,
-        [steamId, SERVER_ID],
+        [steamId, serverId],
       ),
       // Deaths (non-teamkill)
       pool.query(
@@ -230,7 +279,7 @@ app.get("/api/player/:steamId", async (req, res) => {
            AND m.layerClassname NOT LIKE '%Seed%'
            AND d.time >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
            AND d.time <= DATE_SUB(NOW(), INTERVAL 2 HOUR)`,
-        [steamId, SERVER_ID],
+        [steamId, serverId],
       ),
       // Teamkills
       pool.query(
@@ -243,7 +292,7 @@ app.get("/api/player/:steamId", async (req, res) => {
            AND m.layerClassname NOT LIKE '%Seed%'
            AND d.time >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
            AND d.time <= DATE_SUB(NOW(), INTERVAL 2 HOUR)`,
-        [steamId, SERVER_ID],
+        [steamId, serverId],
       ),
       // Top weapons by damage
       pool.query(
@@ -259,7 +308,7 @@ app.get("/api/player/:steamId", async (req, res) => {
          GROUP BY w.weapon
          ORDER BY damage DESC
          LIMIT 5`,
-        [steamId, SERVER_ID],
+        [steamId, serverId],
       ),
       // Damage dealt
       pool.query(
@@ -272,7 +321,7 @@ app.get("/api/player/:steamId", async (req, res) => {
            AND m.layerClassname NOT LIKE '%Seed%'
            AND w.time >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
            AND w.time <= DATE_SUB(NOW(), INTERVAL 2 HOUR)`,
-        [steamId, SERVER_ID],
+        [steamId, serverId],
       ),
       // Matches played (union of attacker + victim to catch all matches)
       pool.query(
@@ -295,7 +344,7 @@ app.get("/api/player/:steamId", async (req, res) => {
              AND d2.time >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
              AND d2.time <= DATE_SUB(NOW(), INTERVAL 2 HOUR)
          ) AS allMatches`,
-        [steamId, SERVER_ID, steamId, SERVER_ID],
+        [steamId, serverId, steamId, serverId],
       ),
       // Most played maps
       pool.query(
@@ -313,7 +362,7 @@ app.get("/api/player/:steamId", async (req, res) => {
          GROUP BY m.layerClassname
          ORDER BY count DESC
          LIMIT 5`,
-        [steamId, steamId, SERVER_ID],
+        [steamId, steamId, serverId],
       ),
       // Top victim (player killed the most by this player)
       pool.query(
@@ -329,7 +378,7 @@ app.get("/api/player/:steamId", async (req, res) => {
          GROUP BY d.victim
          ORDER BY kills DESC
          LIMIT 1`,
-        [steamId, SERVER_ID],
+        [steamId, serverId],
       ),
       // Most revived (player this person revived the most)
       pool.query(
@@ -344,7 +393,7 @@ app.get("/api/player/:steamId", async (req, res) => {
          GROUP BY r.victim
          ORDER BY revives DESC
          LIMIT 1`,
-        [steamId, SERVER_ID],
+        [steamId, serverId],
       ),
       // Most revived by (player who revived this person the most)
       pool.query(
@@ -359,7 +408,7 @@ app.get("/api/player/:steamId", async (req, res) => {
          GROUP BY r.reviver
          ORDER BY revives DESC
          LIMIT 1`,
-        [steamId, SERVER_ID],
+        [steamId, serverId],
       ),
       // Nemesis (player who killed this person the most)
       pool.query(
@@ -375,7 +424,7 @@ app.get("/api/player/:steamId", async (req, res) => {
          GROUP BY d.attacker
          ORDER BY kills DESC
          LIMIT 1`,
-        [steamId, SERVER_ID],
+        [steamId, serverId],
       ),
     ]);
 
@@ -407,7 +456,9 @@ app.get("/api/player/:steamId", async (req, res) => {
     res.json(result);
   } catch (err) {
     console.error("Player stats failed:", err);
-    res.status(500).json({ error: "Failed to fetch player stats" });
+    res
+      .status(err.statusCode || 500)
+      .json({ error: err.message || "Failed to fetch player stats" });
   }
 });
 
@@ -423,7 +474,13 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
 
-process.on("SIGTERM", async () => {
-  await pool.end();
+async function closePoolsAndExit() {
+  const pools = Object.values(databaseSources)
+    .filter(Boolean)
+    .map((source) => source.pool);
+  await Promise.all(pools.map((pool) => pool.end()));
   process.exit(0);
-});
+}
+
+process.on("SIGTERM", closePoolsAndExit);
+process.on("SIGINT", closePoolsAndExit);

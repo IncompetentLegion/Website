@@ -50,7 +50,10 @@ npm install
 
 | Variable | Default | Optional | Description |
 |----------|---------|----------|-------------|
-| `DATABASE_URL` | `mysql://root:test@127.0.0.1:3306/squadjs_db` | Yes | MySQL connection URI |
+| `DATABASE_URL` | `mysql://root:test@127.0.0.1:3306/squadjs_db` | Yes | Vanilla SquadJS MySQL connection URI |
+| `SERVER_ID` | `1` | Yes | Vanilla SquadJS server id used in DBLog queries |
+| `SU_DATABASE_URL` | unset | Yes | Supermod SquadJS MySQL connection URI for `mode=spm` |
+| `SU_SERVER_ID` | `1` | Yes | Supermod SquadJS server id used in DBLog queries |
 | `PORT` | `7000` | Yes | Express server port |
 
 ### 3. Run the server
@@ -63,6 +66,24 @@ With a custom database:
 
 ```bash
 DATABASE_URL=mysql://user:password@host:3306/squadjs_db node server.js
+```
+
+With Vanilla and Supermod enabled:
+
+```bash
+DATABASE_URL=mysql://user:password@host:3306/squadjs_db \
+SU_DATABASE_URL=mysql://user:password@host:3306/su_squadjs_db \
+SERVER_ID=1 \
+SU_SERVER_ID=1 \
+node server.js
+```
+
+Frontend mode URLs:
+
+```text
+/leaderboard?mode=vanilla
+/leaderboard?mode=spm
+/leaderboard?mode=spm&preview=mock
 ```
 
 ## License
