@@ -8,7 +8,7 @@ const RulesPage: React.FC = () => {
         <div className="container mx-auto px-4 md:px-8">
           <SectionHeader 
             title="Operational Directives" 
-            subtitle="To maintain a fun, but fair experience for all, we expect players to abide by the following rules:" 
+            subtitle="The following rules apply to both Discord and the game server where applicable." 
             accent="Rules"
           />
 
@@ -26,7 +26,7 @@ const RulesPage: React.FC = () => {
                                 {[
                                   "Don't be a dick",
                                   "Cheating, exploiting, glitch and bug abuse is forbidden.",
-                                  "Racism and other abusive language is forbidden.",
+                                  "Zero tolerance: racism or abusive language in any form will result in a permanent ban with no appeal. Jokes, memes, quotes, and excuses do not matter.",
                                   "Ghosting, asset wasting or whatever admins deem to be griefing is not allowed. This includes heli ramming.",
                                   "Main camping by vehicles or FOBs is strictly prohibited."
                                 ].map((rule, i) => (
@@ -87,6 +87,27 @@ const RulesPage: React.FC = () => {
                                     Infantry may approach main only if it is not used to block the enemy team's only exit from main. If admins judge the situation to be griefing, rule 1 applies.
                                 </p>
                             </div>
+                        </div>
+                    </Card>
+                </div>
+
+                <div className="mt-8">
+                    <Card title="Section 03: Supermod">
+                        <div>
+                            <h4 className="text-xl 3xl:text-2xl 4xl:text-3xl font-black uppercase tracking-tighter mb-6 flex items-center gap-3">
+                                <span className="text-[#e10600]">/</span> SuperMod server only
+                            </h4>
+                            <ul className="space-y-4">
+                                {[
+                                  "All rules above also apply to the SuperMod server.",
+                                  "Sniper kits/squads are claimable like vehicles."
+                                ].map((rule, i) => (
+                                    <li key={i} className="flex gap-4 group">
+                                        <div className="w-1.5 h-1.5 min-w-[6px] min-h-[6px] bg-[#e10600] mt-2"></div>
+                                        <p className="text-sm 3xl:text-base 4xl:text-lg font-medium text-gray-600 dark:text-gray-400 leading-relaxed group-hover:text-black dark:group-hover:text-gray-200 transition-colors">{rule}</p>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     </Card>
                 </div>
