@@ -1,0 +1,14 @@
+services:
+  website:
+    image: ghcr.io/incompetentlegion/website:latest
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-7000}:7000"
+    environment:
+      NODE_ENV: "production"
+      PORT: "7000"
+      DATABASE_URL: "${DATABASE_URL:?Set DATABASE_URL to the SquadJS MySQL connection URI}"
+      SERVER_ID: "${SERVER_ID:-1}"
+      SU_DATABASE_URL: "${SU_DATABASE_URL:-}"
+      SU_SERVER_ID: "${SU_SERVER_ID:-1}"
+      CORS_ORIGIN: "${CORS_ORIGIN:-*}"
